@@ -1,8 +1,8 @@
-import styled from 'styled-components'
-import { mobile } from '../responsive'
+import styled from 'styled-components';
+import { mobile } from '../responsive';
 
 const baseUrl =
-  import.meta.env.VITE_BASENAME === '/' ? '' : import.meta.env.VITE_BASENAME
+  import.meta.env.VITE_BASENAME === '/' ? '' : import.meta.env.VITE_BASENAME;
 
 const Container = styled.div`
   display: flex;
@@ -10,13 +10,8 @@ const Container = styled.div`
   justify-content: center;
   background-color: #eee;
   padding: 20px;
-`
-
+`;
 
 export const Footer = () => {
-  return (
-    <Container>
-      頁尾
-    </Container>
-  )
-}
+  return <Container>頁尾</Container>;
+};
