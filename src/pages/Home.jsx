@@ -1,11 +1,28 @@
-import { PageLayout, FeaturedInfo, Chart } from '@/components';
+import {
+  PageLayout,
+  FeaturedInfo,
+  Chart,
+  WidgetSm,
+  WidgetLg,
+} from '@/components';
 import { userData } from '../dummyData';
+import styled from 'styled-components';
+import { tablet } from '../responsive';
 
+const Wrapper = styled.div`
+  gap: inherit;
+  display: flex;
+  ${tablet({ flexDirection: 'column' })};
+`;
 const Home = () => {
   return (
     <PageLayout>
       <FeaturedInfo />
       <Chart data={userData} title='用戶分析' grid dataKey='活躍用戶' />
+      <Wrapper>
+        <WidgetSm />
+        <WidgetLg />
+      </Wrapper>
     </PageLayout>
   );
 };

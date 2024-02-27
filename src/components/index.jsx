@@ -6,3 +6,5 @@ export * from './ScrollToTop';
 export * from './Sidebar';
 export * from './FeaturedInfo';
 export * from './Chart';
+export * from './WidgetSm';
+export * from './WidgetLg';
