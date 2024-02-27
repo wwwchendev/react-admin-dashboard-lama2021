@@ -5,6 +5,9 @@ import { DataGrid } from '@material-ui/data-grid';
 import { PageLayout } from '@/components';
 import { DeleteOutline } from '@material-ui/icons';
 import { userRows } from '../dummyData';
+import { tablet } from '../responsive';
+import { useNavigate } from 'react-router-dom';
+
 
 const UserListContainer = styled.div`
   height: 100%;
@@ -37,9 +40,33 @@ const UserListDelete = styled(DeleteOutline)`
   color: red;
   cursor: pointer;
 `;
+// 標題
+const TitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  h1{
+    font-size: 1.5rem;
+  }
+`;
+const UserUpdateButton = styled.button`
+  width: 80px;
+  border: none;
+  padding: 5px;
+  background-color: teal;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  margin-left: auto;
+`;
 
 export default function UserList() {
   const [data, setData] = useState(userRows);
+  const navigate = useNavigate()
 
   const handleDelete = id => {
     setData(data.filter(item => item.id !== id));
@@ -90,6 +117,17 @@ export default function UserList() {
 
   return (
     <PageLayout>
+
+      {/*標題*/}
+      <TitleContainer>
+        <h1>會員資料維護作業</h1>
+        <UserUpdateButton
+          onClick={() => {
+            navigate('/users');
+          }}>
+          新增
+        </UserUpdateButton>
+      </TitleContainer>
       <UserListContainer>
         <DataGrid
           rows={data}
