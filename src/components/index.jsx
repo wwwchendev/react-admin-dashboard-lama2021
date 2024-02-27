@@ -3,3 +3,8 @@ export * from './PageLayout';
 export * from './Footer';
 export * from './Navbar';
 export * from './ScrollToTop';
+export * from './Sidebar';
+export * from './FeaturedInfo';
+export * from './Chart';
+export * from './WidgetSm';
+export * from './WidgetLg';
