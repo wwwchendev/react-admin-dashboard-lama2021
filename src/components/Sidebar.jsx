@@ -199,7 +199,13 @@ export const Sidebar = () => {
               </Title>
 
               <Group $isActived={serviceOpen}>
-                <Item $activePage={activePage} $path={null}>
+                <Item
+                  $activePage={activePage}
+                  $path={null}
+                  onClick={() => {
+                    navigator('/users');
+                  }}
+                >
                   <IconWrapper>
                     <People />
                   </IconWrapper>
