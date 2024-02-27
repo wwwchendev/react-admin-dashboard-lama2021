@@ -21,7 +21,7 @@ import { useLocation } from 'react-router-dom';
 
 const sidebarOpenWidth = {
   pc: '20%',
-  mobile: '40%',
+  mobile: '37.5%',
 };
 
 const Container = styled.div`
@@ -29,13 +29,13 @@ const Container = styled.div`
   min-width: ${p => (p.$isActice ? sidebarOpenWidth.pc : '0%')};
   position: relative;
   ${tablet({
-  minWidth: p => (p.$isActice ? sidebarOpenWidth.mobile : '0%'),
-})};
+    minWidth: p => (p.$isActice ? sidebarOpenWidth.mobile : '0%'),
+  })};
 `;
 const Wrapper = styled.div`
   color: #555;
   flex: 1;
-  padding: 20px;
+  padding: 30px 15px;
   height: calc(100vh - 80px);
   background-color: hsl(240, 100%, 99.2156862745098%);
   position: sticky;
@@ -44,8 +44,8 @@ const Wrapper = styled.div`
   overflow-x: hidden;
   top: 50px;
   ${tablet({
-  minWidth: '25%',
-})};
+    minWidth: '25%',
+  })};
 `;
 
 const SidebarList = styled.div`
@@ -81,7 +81,8 @@ const Item = styled.li`
   align-items: center;
   border-radius: 10px;
   white-space: nowrap;
-  background-color: ${props => props.$path === props.$activePage ? 'rgb(240, 240, 255)' : ''};
+  background-color: ${props =>
+    props.$path === props.$activePage ? 'rgb(240, 240, 255)' : ''};
   &:hover {
     background-color: rgb(240, 240, 255);
   }
@@ -110,8 +111,8 @@ const ToggleShowBtn = styled.button`
   align-items: center;
   justify-content: center;
   ${tablet({
-  left: p => (p.$sidebarOpen ? sidebarOpenWidth.mobile : ''),
-})};
+    left: p => (p.$sidebarOpen ? sidebarOpenWidth.mobile : ''),
+  })};
 `;
 export const Sidebar = () => {
   const navigator = useNavigate();
@@ -125,8 +126,8 @@ export const Sidebar = () => {
   const [securityOpen, setSecurityOpen] = useState(false);
 
   useEffect(() => {
-    setActivePage(pathname)
-  }, [pathname])
+    setActivePage(pathname);
+  }, [pathname]);
   return (
     <>
       <Container $isActice={sidebarOpen}>

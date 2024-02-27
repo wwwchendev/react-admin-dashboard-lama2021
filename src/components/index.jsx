@@ -4,3 +4,5 @@ export * from './Footer';
 export * from './Navbar';
 export * from './ScrollToTop';
 export * from './Sidebar';
+export * from './FeaturedInfo';
+export * from './Chart';
