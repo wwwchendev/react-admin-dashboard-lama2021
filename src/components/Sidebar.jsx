@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import {
   LineStyle,
   Timeline,
@@ -18,31 +17,32 @@ import { tablet } from '@/responsive';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-
-const sidebarOpenWidth = {
-  pc: '20%',
-  mobile: '37.5%',
-};
+import { useLayout } from '../context/LayoutContext';
 
 const Container = styled.div`
   /* transition: all 0.1s ease; */
-  min-width: ${p => (p.$isActice ? sidebarOpenWidth.pc : '0%')};
-  position: relative;
+  position: absolute;
+  background-color: hsl(240, 100%, 99.2156862745098%);
+  min-width: ${p => {
+    /* console.log(p.$layout.sidebar) */
+    return p.$layout.sidebar.actived ? p.$layout.sidebar.width : '0%';
+  }};
+  padding-top: ${p => p.$layout.navbar.height};
+  overflow: hidden;
+  z-index: 5;
   ${tablet({
-    minWidth: p => (p.$isActice ? sidebarOpenWidth.mobile : '0%'),
+    minWidth: p =>
+      p.$layout.sidebar.actived ? p.$layout.sidebar.widthSm : '0%',
   })};
 `;
 const Wrapper = styled.div`
   color: #555;
   flex: 1;
-  padding: 30px 15px;
-  height: calc(100vh - 80px);
-  background-color: hsl(240, 100%, 99.2156862745098%);
-  position: sticky;
-  /* border: 3px solid red; */
+  padding: 30px 15px 0px 15px;
+  position: relative;
+  height: calc(100vh - 90px);
   overflow-y: auto;
   overflow-x: hidden;
-  top: 50px;
   ${tablet({
     minWidth: '25%',
   })};
@@ -63,14 +63,13 @@ const Title = styled.h3`
 const Group = styled.ul`
   list-style: none;
   padding: 5px;
-  height: ${props => (props.$isActice ? '' : '0px')};
+  height: ${props => (props.$isActived ? '' : '0px')};
   display: flex;
   justify-content: center;
   flex-direction: column;
-  opacity: ${props => (props.$isActice ? '1' : '1')};
-  transform: ${props => (props.$isActice ? '' : 'translateX(-100%)')};
+  transform: ${props => (props.$isActived ? '' : 'translateX(-120%)')};
   & > li {
-    height: ${props => (props.$isActice ? '1.8rem' : '0px')};
+    height: ${props => (props.$isActived ? '1.8rem' : '0px')};
   }
 `;
 const Item = styled.li`
@@ -87,63 +86,74 @@ const Item = styled.li`
     background-color: rgb(240, 240, 255);
   }
 `;
-
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  color: inherit;
-`;
 const IconWrapper = styled.div`
   margin-right: 5px;
   font-size: 20px !important;
 `;
+const bounceAnimation = keyframes`
+   20%, 50%, 80% {
+    transform: translateX(-1px);
+  }
+  40% {
+    transform: translateX(3px) scaleX(1.2);
+  }
+  60% {
+    transform: translateX(3px) scaleX(1.2);
+  }
+  0%,100% {
+    transform: translateX(0);
+  }
+`;
 const ToggleShowBtn = styled.button`
-  border-radius: 50%;
-  width: 35px;
+  border-radius: 0 10% 10% 0;
+  width: 30px;
   height: 35px;
   position: fixed;
-  margin: 0 1%;
-  left: ${p => (p.$sidebarOpen ? sidebarOpenWidth.pc : '')};
-  bottom: 15px;
+  margin: 0%;
+  left: ${p => (p.$layout.sidebar.actived ? p.$layout.sidebar.width : '0')};
+  bottom: 30px;
   z-index: 9;
   border: 0;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: rgb(223, 223, 255);
+  &:hover > svg {
+    animation: ${bounceAnimation} 1s ease infinite;
+  }
   ${tablet({
-    left: p => (p.$sidebarOpen ? sidebarOpenWidth.mobile : ''),
+    left: p => (p.$layout.sidebar.actived ? p.$layout.sidebar.widthSm : '0'),
   })};
 `;
 export const Sidebar = () => {
   const navigator = useNavigate();
+  //當前頁面
   const { pathname } = useLocation();
-
   const [activePage, setActivePage] = useState('');
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  //分類是否打開
   const [salesOpen, setSalesOpen] = useState(true);
   const [serviceOpen, setServiceOpen] = useState(true);
   const [frontendOpen, setFrontendOpen] = useState(true);
-  const [securityOpen, setSecurityOpen] = useState(false);
+  const [securityOpen, setSecurityOpen] = useState(true);
+
+  const { elState, toggleSidebar } = useLayout();
 
   useEffect(() => {
     setActivePage(pathname);
   }, [pathname]);
+
   return (
     <>
-      <Container $isActice={sidebarOpen}>
-        <ToggleShowBtn
-          $sidebarOpen={sidebarOpen}
-          onClick={() => {
-            setSidebarOpen(!sidebarOpen);
-          }}
-        >
-          {sidebarOpen ? (
-            <FirstPage style={{ fontSize: '14px' }} />
+      <Container $layout={elState}>
+        <ToggleShowBtn $layout={elState} onClick={toggleSidebar}>
+          {elState.sidebar.actived ? (
+            <FirstPage style={{ fontSize: '18px' }} />
           ) : (
-            <LastPage style={{ fontSize: '14px' }} />
+            <LastPage style={{ fontSize: '18px' }} />
           )}
         </ToggleShowBtn>
-        {sidebarOpen && (
+        {elState.sidebar.actived && (
           <Wrapper>
             <SidebarList>
               <Item
@@ -165,7 +175,7 @@ export const Sidebar = () => {
                 <KeyboardArrowDown />
               </Title>
 
-              <Group $isActice={salesOpen}>
+              <Group $isActived={salesOpen}>
                 <Item $activePage={activePage} $path={null}>
                   <IconWrapper>
                     <AttachMoney />
@@ -188,7 +198,7 @@ export const Sidebar = () => {
                 <KeyboardArrowDown />
               </Title>
 
-              <Group $isActice={serviceOpen}>
+              <Group $isActived={serviceOpen}>
                 <Item $activePage={activePage} $path={null}>
                   <IconWrapper>
                     <People />
@@ -210,7 +220,7 @@ export const Sidebar = () => {
                 <KeyboardArrowDown />
               </Title>
 
-              <Group $isActice={frontendOpen}>
+              <Group $isActived={frontendOpen}>
                 <Item $activePage={activePage} $path={null}>
                   <IconWrapper>
                     <Storefront />
@@ -226,7 +236,7 @@ export const Sidebar = () => {
                 <KeyboardArrowDown />
               </Title>
 
-              <Group $isActice={securityOpen}>
+              <Group $isActived={securityOpen}>
                 <Item
                   $activePage={activePage}
                   $path={'/employee'}

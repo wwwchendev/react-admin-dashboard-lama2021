@@ -12,7 +12,7 @@ const Group = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
-  ${tablet({ gap: '15px' })}; 
+  ${tablet({ gap: '15px' })};
 `;
 const Title = styled.span`
   font-size: 22px;
@@ -59,16 +59,14 @@ const Button = styled.button`
   color: #555;
   cursor: pointer;
   & > span {
-  ${tablet({ display: 'none' })};
-  
+    ${tablet({ display: 'none' })};
   }
 `;
 const Icon = styled.span`
   font-size: 16px !important;
   margin-right: 5px;
-  ${tablet({ margin: 0 })};  
+  ${tablet({ margin: 0 })};
 `;
-
 
 export const WidgetSm = () => {
   return (

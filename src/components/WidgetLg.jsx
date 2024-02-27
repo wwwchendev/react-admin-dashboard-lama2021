@@ -3,7 +3,7 @@ import { tablet } from '../responsive';
 
 // 排版
 const Container = styled.div`
-max-width: 65%;
+  max-width: 65%;
   flex: 2;
   box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
   padding: 20px;
@@ -16,14 +16,15 @@ const Title = styled.h3`
 `;
 // 表格
 const TableWrapper = styled.div`
-  overflow-x: auto; 
+  overflow-x: auto;
   max-width: 100%;
 `;
 const Table = styled.table`
-  border-spacing:0.5rem 0.8rem;
+  border-spacing: 0.5rem 0.8rem;
   width: 100%;
-  tr, td{
-  text-align: left;
+  tr,
+  td {
+    text-align: left;
   }
 `;
 const UserTd = styled.td`

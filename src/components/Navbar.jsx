@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { NotificationsNone, Language, Settings } from '@material-ui/icons';
 import { tablet } from '@/responsive';
+import { useLayout } from '../context/LayoutContext';
 const baseUrl =
   import.meta.env.VITE_BASENAME === '/' ? '' : import.meta.env.VITE_BASENAME;
 
@@ -12,12 +13,14 @@ const Container = styled.div`
   width: 100%;
   background-color: #fff;
   box-shadow: 0px 5px 30px rgba(204, 204, 204, 0.25);
+  height: ${p => p.$layout.navbar.height};
 `;
 const Wrapper = styled.div`
-  padding: 10px 20px;
+  padding: 0px 0px;
   display: flex;
+  align-items: center;
+  height: 100%;
   justify-content: space-between;
-  ${tablet({ padding: '10px 0px' })};
 `;
 const Badge = styled.span`
   background-color: #f82828;
@@ -43,6 +46,9 @@ const MenuItem = styled.div`
     position: absolute;
     top: -5px;
     right: -6px;
+  }
+  & > p {
+    margin-left: 5px;
   }
 `;
 /* 左方 */
@@ -85,8 +91,9 @@ const AvatarWrapper = styled.div`
 
 export const Navbar = () => {
   const navigate = useNavigate();
+  const { elState } = useLayout();
   return (
-    <Container>
+    <Container $layout={elState}>
       <Wrapper>
         <Left>
           <Logo
@@ -127,8 +134,13 @@ export const Navbar = () => {
             }}
           >
             <AvatarWrapper>
-              <img src="https://images.pexels.com/photos/1526814/pexels-photo-1526814.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" alt="" className="topAvatar" />
+              <img
+                src='https://images.pexels.com/photos/1526814/pexels-photo-1526814.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500'
+                alt=''
+                className='topAvatar'
+              />
             </AvatarWrapper>
+            <p>CHEN</p>
           </MenuItem>
         </Right>
       </Wrapper>

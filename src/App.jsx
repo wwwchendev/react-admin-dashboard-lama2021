@@ -1,10 +1,10 @@
 import { Outlet } from 'react-router-dom';
-import { Navbar, Footer, ScrollToTop, Sidebar } from '@/components';
+import { Navbar, Sidebar } from '@/components';
 import styled from 'styled-components';
 
 const Container = styled.div`
   display: flex;
-  padding-top: 50px;
+  position: relative;
 `;
 
 function App() {
@@ -15,7 +15,6 @@ function App() {
         <Sidebar />
         <Outlet />
       </Container>
-      <ScrollToTop />
     </>
   );
 }
