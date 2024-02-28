@@ -29,7 +29,7 @@ const TitleContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 10px;
-  h1{
+  h1 {
     font-size: 1.5rem;
   }
 `;
@@ -45,8 +45,8 @@ const UserUpdateButton = styled.button`
   display: flex;
   justify-content: center;
   ${tablet({
-  display: 'none'
-})};
+    display: 'none',
+  })};
 `;
 const InnerContainer = styled.div`
   display: flex;
@@ -75,8 +75,8 @@ const UserInfoName = styled.span`
   font-weight: 600;
 `;
 const UserInfoJoinDate = styled.span`
-font-size: 14px;
-margin-top: 5px ;
+  font-size: 14px;
+  margin-top: 5px;
   font-weight: 300;
 `;
 //帳戶資訊+聯絡方式
@@ -104,14 +104,14 @@ const UserUpdate = styled.div`
   flex: 3;
   padding: 20px;
   box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
-  gap: 20px;  
+  gap: 20px;
   ${tablet({
-  flexDirection: 'column-reverse',
-})};
+    flexDirection: 'column-reverse',
+  })};
 `;
 
 const UserUpdateForm = styled.form`
-  flex:2;
+  flex: 2;
 `;
 const UserUpdateDataWrapper = styled.div`
   display: flex;
@@ -154,24 +154,24 @@ const UserUpdateIcon = styled(Publish)`
 `;
 
 const SaveWrapper = styled.div`
-display: none;
+  display: none;
   ${tablet({
-  display: 'flex'
-})};
-${UserUpdateButton}{
-  margin-top: 20px ;
-  width: 100%;
-  ${tablet({
-  display: 'flex'
-})};
-}
+    display: 'flex',
+  })};
+  ${UserUpdateButton} {
+    margin-top: 20px;
+    width: 100%;
+    ${tablet({
+      display: 'flex',
+    })};
+  }
 `;
 export default function User() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { setCurrentPage } = useCurrentPage();
   useEffect(() => {
     setCurrentPage('/users');
-  }, [])
+  }, []);
   return (
     <PageLayout>
       <Container>
@@ -181,7 +181,8 @@ export default function User() {
           <UserUpdateButton
             onClick={() => {
               navigate('/users');
-            }}>
+            }}
+          >
             更新
           </UserUpdateButton>
         </TitleContainer>
@@ -220,7 +221,6 @@ export default function User() {
                 <Icon as={MailOutline} />
                 <UserInfoDataText>annabeck99@gmail.com</UserInfoDataText>
               </UserInfoDataWrapper>
-
             </UserInfoMore>
           </UserInfo>
 
@@ -274,7 +274,7 @@ export default function User() {
           </UserUpdate>
         </InnerContainer>
 
-        <SaveWrapper >
+        <SaveWrapper>
           <UserUpdateButton
             onClick={() => {
               navigate('/users');
@@ -282,7 +282,7 @@ export default function User() {
           >
             更新
           </UserUpdateButton>
-        </SaveWrapper >
+        </SaveWrapper>
       </Container>
     </PageLayout>
   );

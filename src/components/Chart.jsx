@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import {
   LineChart,
@@ -11,7 +10,6 @@ import {
 
 const ChartContainer = styled.div`
   margin: 10px 0;
-  box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
   padding: 20px;
 `;
 

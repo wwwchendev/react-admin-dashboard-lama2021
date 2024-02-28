@@ -4,30 +4,26 @@ import styled from 'styled-components';
 import { DataGrid } from '@material-ui/data-grid';
 import { PageLayout } from '@/components';
 import { DeleteOutline } from '@material-ui/icons';
-import { userRows } from '../dummyData';
-import { tablet } from '../responsive';
+import { productRows } from '../dummyData';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useCurrentPage } from '../context/CurrentPageContext';
 
-const UserListContainer = styled.div`
+const Container = styled.div`
   height: 100%;
 `;
-
-const UserListUser = styled.div`
+const ListItem = styled.div`
   display: flex;
   align-items: center;
 `;
-
-const UserListImg = styled.img`
+const Img = styled.img`
   width: 32px;
   height: 32px;
   border-radius: 50%;
   object-fit: cover;
   margin-right: 10px;
 `;
-
-const UserListEdit = styled.button`
+const Edit = styled.button`
   border: none;
   border-radius: 10px;
   padding: 5px 10px;
@@ -36,8 +32,7 @@ const UserListEdit = styled.button`
   cursor: pointer;
   margin-right: 20px;
 `;
-
-const UserListDelete = styled(DeleteOutline)`
+const Delete = styled(DeleteOutline)`
   color: red;
   cursor: pointer;
 `;
@@ -65,14 +60,14 @@ const UserUpdateButton = styled.button`
   margin-left: auto;
 `;
 
-export default function Users() {
-  const [data, setData] = useState(userRows);
+export default function Products() {
   const navigate = useNavigate();
   const { setCurrentPage } = useCurrentPage();
   useEffect(() => {
-    setCurrentPage('/users');
+    setCurrentPage('/products');
   }, []);
 
+  const [data, setData] = useState(productRows);
   const handleDelete = id => {
     setData(data.filter(item => item.id !== id));
   };
@@ -80,27 +75,27 @@ export default function Users() {
   const columns = [
     { field: 'id', headerName: 'ID', width: 100 },
     {
-      field: 'user',
-      headerName: '會員名稱',
+      field: 'product',
+      headerName: '商品名稱',
       width: 200,
       renderCell: params => {
         return (
-          <UserListUser>
-            <UserListImg src={params.row.avatar} alt='' />
-            {params.row.username}
-          </UserListUser>
+          <ListItem>
+            <Img className='productListImg' src={params.row.img} alt='' />
+            {params.row.name}
+          </ListItem>
         );
       },
     },
-    { field: 'email', headerName: 'Email', width: 200 },
+    { field: 'stock', headerName: '庫存數量', width: 200 },
     {
       field: 'status',
       headerName: '狀態',
       width: 120,
     },
     {
-      field: 'transaction',
-      headerName: '累計消費',
+      field: 'price',
+      headerName: '價格',
       width: 160,
     },
     {
@@ -110,10 +105,13 @@ export default function Users() {
       renderCell: params => {
         return (
           <>
-            <Link to={'/user/' + params.row.id}>
-              <UserListEdit>編輯</UserListEdit>
+            <Link to={'/product/' + params.row.id}>
+              <Edit>編輯</Edit>
             </Link>
-            <UserListDelete onClick={() => handleDelete(params.row.id)} />
+            <Delete
+              className='productListDelete'
+              onClick={() => handleDelete(params.row.id)}
+            />
           </>
         );
       },
@@ -124,16 +122,16 @@ export default function Users() {
     <PageLayout>
       {/*標題*/}
       <TitleContainer>
-        <h1>會員資料維護作業</h1>
+        <h1>商品上架維護作業</h1>
         <UserUpdateButton
           onClick={() => {
-            navigate('/newUser');
+            navigate('/newProduct');
           }}
         >
           新增
         </UserUpdateButton>
       </TitleContainer>
-      <UserListContainer>
+      <Container>
         <DataGrid
           rows={data}
           columns={columns}
@@ -142,7 +140,7 @@ export default function Users() {
           checkboxSelection
           disableSelectionOnClick
         />
-      </UserListContainer>
+      </Container>
     </PageLayout>
   );
 }

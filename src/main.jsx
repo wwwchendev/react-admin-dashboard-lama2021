@@ -6,7 +6,10 @@ import App from '@/App';
 import Home from '@/pages/Home';
 import User from '@/pages/User';
 import Users from '@/pages/Users';
+import Products from './pages/Products';
 import { NewUser } from './pages/NewUser';
+import Product from './pages/Product';
+import NewProduct from './pages/NewProduct';
 
 const router = createBrowserRouter(
   [
@@ -19,16 +22,28 @@ const router = createBrowserRouter(
           element: <Home />,
         },
         {
-          path: '/user/:id',
-          element: <User />,
-        },
-        {
           path: '/users',
           element: <Users />,
         },
         {
+          path: '/user/:id',
+          element: <User />,
+        },
+        {
           path: '/newUser',
           element: <NewUser />,
+        },
+        {
+          path: '/products',
+          element: <Products />,
+        },
+        {
+          path: '/product/:id',
+          element: <Product />,
+        },
+        {
+          path: '/newProduct',
+          element: <NewProduct />,
         },
         {
           path: '/employee',
