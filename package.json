@@ -1,4 +1,5 @@
 {
+  "homepage": "https://wwwchendev.github.io/react-admin-dashboard-lama2021/",
   "name": "react-admin-dashboard",
   "private": true,
   "version": "0.0.0",
@@ -9,7 +10,8 @@
     "preview": "vite preview",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --write src --fix",
-    "precommit": " npm run format --fix && npm run lint"
+    "precommit": " npm run format --fix && npm run lint",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@material-ui/data-grid": "4.0.0-alpha.37",
