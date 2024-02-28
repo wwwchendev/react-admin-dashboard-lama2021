@@ -5,6 +5,7 @@ import App from '@/App';
 import Home from '@/pages/Home';
 import User from '@/pages/User';
 import Users from '@/pages/Users';
+import { NewUser } from './pages/NewUser';
 
 const router = createBrowserRouter(
   [
@@ -23,6 +24,10 @@ const router = createBrowserRouter(
         {
           path: '/users',
           element: <Users />,
+        },
+        {
+          path: '/newUser',
+          element: <NewUser />,
         },
         {
           path: '/employee',

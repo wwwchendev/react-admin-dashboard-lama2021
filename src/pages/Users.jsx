@@ -123,7 +123,7 @@ export default function UserList() {
         <h1>會員資料維護作業</h1>
         <UserUpdateButton
           onClick={() => {
-            navigate('/users');
+            navigate('/newUser');
           }}>
           新增
         </UserUpdateButton>
