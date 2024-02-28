@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useCurrentPage } from '@/context/CurrentPageContext';
 import { PageLayout, Chart } from '@/components';
@@ -126,6 +125,20 @@ const Select = styled.select`
   border-radius: 5px;
 `;
 
+const SaveWrapper = styled.div`
+  display: none;
+  ${tablet({
+    display: 'flex',
+  })};
+  ${Button} {
+    margin-top: 20px;
+    width: 100%;
+    ${tablet({
+      display: 'flex',
+    })};
+  }
+`;
+
 const Product = () => {
   const navigate = useNavigate();
   const { setCurrentPage } = useCurrentPage();
@@ -133,19 +146,6 @@ const Product = () => {
     setCurrentPage('/products');
   }, []);
 
-  const SaveWrapper = styled.div`
-    display: none;
-    ${tablet({
-      display: 'flex',
-    })};
-    ${Button} {
-      margin-top: 20px;
-      width: 100%;
-      ${tablet({
-        display: 'flex',
-      })};
-    }
-  `;
   return (
     <PageLayout>
       <Container>

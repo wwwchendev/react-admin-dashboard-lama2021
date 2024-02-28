@@ -7,8 +7,8 @@ import { useEffect } from 'react';
 
 // 布局
 const Container = styled.div`
-padding: 0 20px;
-${tablet({ padding: '0px' })};
+  padding: 0 20px;
+  ${tablet({ padding: '0px' })};
 `;
 // 標題
 const TitleContainer = styled.div`
@@ -16,7 +16,7 @@ const TitleContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
-  h1{
+  h1 {
     font-size: 1.5rem;
   }
 `;
@@ -32,21 +32,21 @@ const UserUpdateButton = styled.button`
   display: flex;
   justify-content: center;
   ${tablet({
-  display: 'none'
-})};
+    display: 'none',
+  })};
 `;
 const SaveWrapper = styled.div`
-display: none;
+  display: none;
   ${tablet({
-  display: 'flex'
-})};
-${UserUpdateButton}{
-  margin-top: 20px ;
-  width: 100%;
-  ${tablet({
-  display: 'flex'
-})};
-}
+    display: 'flex',
+  })};
+  ${UserUpdateButton} {
+    margin-top: 20px;
+    width: 100%;
+    ${tablet({
+      display: 'flex',
+    })};
+  }
 `;
 
 //表單
@@ -85,11 +85,11 @@ const Select = styled.select`
 `;
 
 export const NewUser = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { setCurrentPage } = useCurrentPage();
   useEffect(() => {
     setCurrentPage('/users');
-  }, [])
+  }, []);
   return (
     <PageLayout>
       <Container>
@@ -99,7 +99,8 @@ export const NewUser = () => {
           <UserUpdateButton
             onClick={() => {
               navigate('/user/1');
-            }}>
+            }}
+          >
             新增
           </UserUpdateButton>
         </TitleContainer>
@@ -108,50 +109,50 @@ export const NewUser = () => {
         <Form>
           <Item>
             <Label>帳號</Label>
-            <Input type="text" placeholder="john" />
+            <Input type='text' placeholder='john' />
           </Item>
           <Item>
             <Label>姓名</Label>
-            <Input type="text" placeholder="John Smith" />
+            <Input type='text' placeholder='John Smith' />
           </Item>
           <Item>
             <Label>Email</Label>
-            <Input type="email" placeholder="john@gmail.com" />
+            <Input type='email' placeholder='john@gmail.com' />
           </Item>
           <Item>
             <Label>密碼</Label>
-            <Input type="password" placeholder="password" />
+            <Input type='password' placeholder='password' />
           </Item>
           <Item>
             <Label>手機號碼</Label>
-            <Input type="text" placeholder="+1 123 456 78" />
+            <Input type='text' placeholder='+1 123 456 78' />
           </Item>
           <Item>
             <Label>地址</Label>
-            <Input type="text" placeholder="New York | USA" />
+            <Input type='text' placeholder='New York | USA' />
           </Item>
           <Item>
             <Label>性別</Label>
             <div>
-              <Input type="radio" name="gender" id="male" value="male" />
-              <GenderLabel htmlFor="male">男性</GenderLabel>
-              <Input type="radio" name="gender" id="female" value="female" />
-              <GenderLabel htmlFor="female">女性</GenderLabel>
-              <Input type="radio" name="gender" id="other" value="other" />
-              <GenderLabel htmlFor="other">保留</GenderLabel>
+              <Input type='radio' name='gender' id='male' value='male' />
+              <GenderLabel htmlFor='male'>男性</GenderLabel>
+              <Input type='radio' name='gender' id='female' value='female' />
+              <GenderLabel htmlFor='female'>女性</GenderLabel>
+              <Input type='radio' name='gender' id='other' value='other' />
+              <GenderLabel htmlFor='other'>保留</GenderLabel>
             </div>
           </Item>
           <Item>
             <Label>是否願意收到電子信通知</Label>
-            <Select name="mailNotification" id="mailNotification">
-              <option value="yes">願意</option>
-              <option value="no">不願意</option>
+            <Select name='mailNotification' id='mailNotification'>
+              <option value='yes'>願意</option>
+              <option value='no'>不願意</option>
             </Select>
           </Item>
         </Form>
 
         {/*保存*/}
-        <SaveWrapper >
+        <SaveWrapper>
           <UserUpdateButton
             onClick={() => {
               navigate('/user/1');
@@ -159,8 +160,8 @@ export const NewUser = () => {
           >
             新增
           </UserUpdateButton>
-        </SaveWrapper >
+        </SaveWrapper>
       </Container>
     </PageLayout>
   );
-}
+};

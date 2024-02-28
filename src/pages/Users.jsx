@@ -10,7 +10,6 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useCurrentPage } from '../context/CurrentPageContext';
 
-
 const UserListContainer = styled.div`
   height: 100%;
 `;
@@ -48,7 +47,7 @@ const TitleContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 10px;
-  h1{
+  h1 {
     font-size: 1.5rem;
   }
 `;
@@ -72,7 +71,7 @@ export default function Users() {
   const { setCurrentPage } = useCurrentPage();
   useEffect(() => {
     setCurrentPage('/users');
-  }, [])
+  }, []);
 
   const handleDelete = id => {
     setData(data.filter(item => item.id !== id));
@@ -123,14 +122,14 @@ export default function Users() {
 
   return (
     <PageLayout>
-
       {/*標題*/}
       <TitleContainer>
         <h1>會員資料維護作業</h1>
         <UserUpdateButton
           onClick={() => {
             navigate('/newUser');
-          }}>
+          }}
+        >
           新增
         </UserUpdateButton>
       </TitleContainer>
