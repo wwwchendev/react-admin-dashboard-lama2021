@@ -7,6 +7,8 @@ import { DeleteOutline } from '@material-ui/icons';
 import { userRows } from '../dummyData';
 import { tablet } from '../responsive';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useCurrentPage } from '../context/CurrentPageContext';
 
 
 const UserListContainer = styled.div`
@@ -64,9 +66,13 @@ const UserUpdateButton = styled.button`
   margin-left: auto;
 `;
 
-export default function UserList() {
+export default function Users() {
   const [data, setData] = useState(userRows);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const { setCurrentPage } = useCurrentPage();
+  useEffect(() => {
+    setCurrentPage('/users');
+  }, [])
 
   const handleDelete = id => {
     setData(data.filter(item => item.id !== id));

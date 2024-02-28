@@ -2,6 +2,8 @@ import { PageLayout } from '@/components';
 import styled from 'styled-components';
 import { tablet } from '../responsive';
 import { useNavigate } from 'react-router-dom';
+import { useCurrentPage } from '../context/CurrentPageContext';
+import { useEffect } from 'react';
 
 // 布局
 const Container = styled.div`
@@ -84,6 +86,10 @@ const Select = styled.select`
 
 export const NewUser = () => {
   const navigate = useNavigate()
+  const { setCurrentPage } = useCurrentPage();
+  useEffect(() => {
+    setCurrentPage('/users');
+  }, [])
   return (
     <PageLayout>
       <Container>

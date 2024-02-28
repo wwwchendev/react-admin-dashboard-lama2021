@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useLayout } from '../context/LayoutContext';
+import { useCurrentPage } from '../context/CurrentPageContext';
 
 const Container = styled.div`
   /* transition: all 0.1s ease; */
@@ -44,8 +45,8 @@ const Wrapper = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
   ${tablet({
-    minWidth: '25%',
-  })};
+  minWidth: '25%',
+})};
 `;
 
 const SidebarList = styled.div`
@@ -123,25 +124,19 @@ const ToggleShowBtn = styled.button`
     animation: ${bounceAnimation} 1s ease infinite;
   }
   ${tablet({
-    left: p => (p.$layout.sidebar.actived ? p.$layout.sidebar.widthSm : '0'),
-  })};
+  left: p => (p.$layout.sidebar.actived ? p.$layout.sidebar.widthSm : '0'),
+})};
 `;
 export const Sidebar = () => {
   const navigator = useNavigate();
-  //當前頁面
-  const { pathname } = useLocation();
-  const [activePage, setActivePage] = useState('');
+  const { elState, toggleSidebar } = useLayout();
+  const { currentPage } = useCurrentPage();
+
   //分類是否打開
   const [salesOpen, setSalesOpen] = useState(true);
   const [serviceOpen, setServiceOpen] = useState(true);
   const [frontendOpen, setFrontendOpen] = useState(true);
   const [securityOpen, setSecurityOpen] = useState(true);
-
-  const { elState, toggleSidebar } = useLayout();
-
-  useEffect(() => {
-    setActivePage(pathname);
-  }, [pathname]);
 
   return (
     <>
@@ -157,7 +152,7 @@ export const Sidebar = () => {
           <Wrapper>
             <SidebarList>
               <Item
-                $activePage={activePage}
+                $activePage={currentPage}
                 $path={'/'}
                 onClick={() => {
                   navigator('/');
@@ -176,14 +171,14 @@ export const Sidebar = () => {
               </Title>
 
               <Group $isActived={salesOpen}>
-                <Item $activePage={activePage} $path={null}>
+                <Item $activePage={currentPage} $path={null}>
                   <IconWrapper>
                     <AttachMoney />
                   </IconWrapper>
                   訂單管理
                 </Item>
 
-                <Item $activePage={activePage} $path={null}>
+                <Item $activePage={currentPage} $path={null}>
                   <IconWrapper>
                     <ReceiptOutlined />
                   </IconWrapper>
@@ -200,8 +195,8 @@ export const Sidebar = () => {
 
               <Group $isActived={serviceOpen}>
                 <Item
-                  $activePage={activePage}
-                  $path={null}
+                  $activePage={currentPage}
+                  $path={'/users'}
                   onClick={() => {
                     navigator('/users');
                   }}
@@ -211,7 +206,7 @@ export const Sidebar = () => {
                   </IconWrapper>
                   會員資料維護
                 </Item>
-                <Item $activePage={activePage} $path={null}>
+                <Item $activePage={currentPage} $path={null}>
                   <IconWrapper>
                     <MailOutline />
                   </IconWrapper>
@@ -227,7 +222,7 @@ export const Sidebar = () => {
               </Title>
 
               <Group $isActived={frontendOpen}>
-                <Item $activePage={activePage} $path={null}>
+                <Item $activePage={currentPage} $path={null}>
                   <IconWrapper>
                     <Storefront />
                   </IconWrapper>
@@ -244,7 +239,7 @@ export const Sidebar = () => {
 
               <Group $isActived={securityOpen}>
                 <Item
-                  $activePage={activePage}
+                  $activePage={currentPage}
                   $path={'/employee'}
                   onClick={() => {
                     navigator('/employee');
@@ -255,7 +250,7 @@ export const Sidebar = () => {
                   </IconWrapper>
                   員工帳號管理
                 </Item>
-                <Item $activePage={activePage} $path={null}>
+                <Item $activePage={currentPage} $path={null}>
                   <IconWrapper>
                     <Timeline />
                   </IconWrapper>

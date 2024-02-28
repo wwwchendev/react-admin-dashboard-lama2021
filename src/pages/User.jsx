@@ -9,6 +9,8 @@ import {
 } from '@material-ui/icons';
 import { tablet } from '../responsive';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useCurrentPage } from '../context/CurrentPageContext';
 
 // 布局
 const Container = styled.div`
@@ -166,6 +168,10 @@ ${UserUpdateButton}{
 `;
 export default function User() {
   const navigate = useNavigate()
+  const { setCurrentPage } = useCurrentPage();
+  useEffect(() => {
+    setCurrentPage('/users');
+  }, [])
   return (
     <PageLayout>
       <Container>
