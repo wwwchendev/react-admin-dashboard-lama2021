@@ -1,8 +1,12 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ReactDOM from 'react-dom/client';
+import { LayoutProvider } from './context/LayoutContext';
+import { CurrentPageProvider } from './context/CurrentPageContext';
 import App from '@/App';
 import Home from '@/pages/Home';
-import { LayoutProvider } from './context/LayoutContext';
+import User from '@/pages/User';
+import Users from '@/pages/Users';
+import { NewUser } from './pages/NewUser';
 
 const router = createBrowserRouter(
   [
@@ -13,6 +17,18 @@ const router = createBrowserRouter(
         {
           path: '/',
           element: <Home />,
+        },
+        {
+          path: '/user/:id',
+          element: <User />,
+        },
+        {
+          path: '/users',
+          element: <Users />,
+        },
+        {
+          path: '/newUser',
+          element: <NewUser />,
         },
         {
           path: '/employee',
@@ -27,7 +43,9 @@ const router = createBrowserRouter(
 );
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <LayoutProvider>
-    <RouterProvider router={router} />
-  </LayoutProvider>,
+  <CurrentPageProvider>
+    <LayoutProvider>
+      <RouterProvider router={router} />
+    </LayoutProvider>
+  </CurrentPageProvider>,
 );

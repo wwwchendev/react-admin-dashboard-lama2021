@@ -8,6 +8,8 @@ import {
 import { userData } from '../dummyData';
 import styled from 'styled-components';
 import { tablet } from '../responsive';
+import { useCurrentPage } from '../context/CurrentPageContext';
+import { useEffect } from 'react';
 
 const Wrapper = styled.div`
   gap: inherit;
@@ -15,6 +17,10 @@ const Wrapper = styled.div`
   ${tablet({ flexDirection: 'column' })};
 `;
 const Home = () => {
+  const { setCurrentPage } = useCurrentPage();
+  useEffect(() => {
+    setCurrentPage('/');
+  }, [])
   return (
     <PageLayout>
       <FeaturedInfo />
