@@ -45,8 +45,8 @@ const Wrapper = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
   ${tablet({
-  minWidth: '25%',
-})};
+    minWidth: '25%',
+  })};
 `;
 
 const SidebarList = styled.div`
@@ -124,8 +124,8 @@ const ToggleShowBtn = styled.button`
     animation: ${bounceAnimation} 1s ease infinite;
   }
   ${tablet({
-  left: p => (p.$layout.sidebar.actived ? p.$layout.sidebar.widthSm : '0'),
-})};
+    left: p => (p.$layout.sidebar.actived ? p.$layout.sidebar.widthSm : '0'),
+  })};
 `;
 export const Sidebar = () => {
   const navigator = useNavigate();
@@ -222,7 +222,13 @@ export const Sidebar = () => {
               </Title>
 
               <Group $isActived={frontendOpen}>
-                <Item $activePage={currentPage} $path={null}>
+                <Item
+                  $activePage={currentPage}
+                  $path={'/products'}
+                  onClick={() => {
+                    navigator('/products');
+                  }}
+                >
                   <IconWrapper>
                     <Storefront />
                   </IconWrapper>
