@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
+
 const baseUrl =
   import.meta.env.VITE_BASENAME === '/' ? '' : import.meta.env.VITE_BASENAME;
 
@@ -42,29 +42,33 @@ const Icon = styled.img`
   }
 `;
 
-export const ScrollToTop = () => {
+export const ScrollToTop = ({ $contentRef = null }) => {
   const [showButton, setShowButton] = useState(false);
+
   useEffect(() => {
     const handleScroll = () => {
+      const scrollElement = $contentRef ? $contentRef.current : window;
       const windowHeight = window.innerHeight;
-      const scrollTop = window.scrollY;
-
-      // 如果滾動高度超過視窗高度的20%，則顯示按鈕，否則隱藏
+      const scrollTop = scrollElement.scrollY || scrollElement.scrollTop;
       setShowButton(scrollTop > windowHeight * 0.2);
     };
 
-    // 監聽滾動事件
-    window.addEventListener('scroll', handleScroll);
+    const scrollElement = $contentRef ? $contentRef.current : window;
+
+    scrollElement.addEventListener('scroll', handleScroll);
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      scrollElement.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [$contentRef]);
+
   const handleScrollToTop = () => {
-    window.scrollTo({
+    const scrollElement = $contentRef ? $contentRef.current : window;
+    scrollElement.scrollTo({
       top: 0,
       behavior: 'smooth',
     });
   };
+
   return (
     <ToTopButton $showButton={showButton} onClick={handleScrollToTop}>
       <Icon
