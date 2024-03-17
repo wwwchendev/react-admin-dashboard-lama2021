@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { NotificationsNone, Language, Settings } from '@material-ui/icons';
 import { tablet } from '@/responsive';
 import { useLayout } from '../context/LayoutContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { AuthRequests } from '@/store/employee';
+
 const baseUrl =
   import.meta.env.VITE_BASENAME === '/' ? '' : import.meta.env.VITE_BASENAME;
 
@@ -92,6 +95,12 @@ const AvatarWrapper = styled.div`
 export const Navbar = () => {
   const navigate = useNavigate();
   const { elState } = useLayout();
+  const employee = useSelector(state => state.employee.currentEmployee);
+  const dispatch = useDispatch();
+  const handleLogout = e => {
+    e.preventDefault();
+    dispatch(AuthRequests.logout());
+  };
   return (
     <Container $layout={elState}>
       <Wrapper>
@@ -105,7 +114,24 @@ export const Navbar = () => {
           </Logo>
         </Left>
         <Right>
-          <MenuItem
+          {
+            employee && (<>
+              <MenuItem
+              // onClick={() => {
+              //   navigate('/#account');
+              // }}
+              >
+                <p>{employee.name} ( {employee.employeeId} )</p>
+              </MenuItem>
+              <MenuItem
+                onClick={handleLogout}
+              >
+                <p>登出</p>
+              </MenuItem>
+            </>
+            )
+          }
+          {/* <MenuItem
             onClick={() => {
               navigate('/#notifications');
             }}
@@ -127,21 +153,7 @@ export const Navbar = () => {
             }}
           >
             <Settings style={{ color: '#555' }} />
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              navigate('/#account');
-            }}
-          >
-            <AvatarWrapper>
-              <img
-                src='https://images.pexels.com/photos/1526814/pexels-photo-1526814.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500'
-                alt=''
-                className='topAvatar'
-              />
-            </AvatarWrapper>
-            <p>CHEN</p>
-          </MenuItem>
+          </MenuItem> */}
         </Right>
       </Wrapper>
     </Container>

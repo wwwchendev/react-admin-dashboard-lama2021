@@ -7,15 +7,25 @@ import Home from '@/pages/Home';
 import User from '@/pages/User';
 import Users from '@/pages/Users';
 import Products from './pages/Products';
+import Security from './pages/Security';
 import { NewUser } from './pages/NewUser';
 import Product from './pages/Product';
 import NewProduct from './pages/NewProduct';
+import Login from './pages/Login';
+import store, { persistor } from '@/store/configureStore';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { PrivateRoute, RedirectIfLoggedIn } from '@/ProtectedRoute';
 
 const router = createBrowserRouter(
   [
     {
       path: '/',
-      element: <App />,
+      element: (
+        <PrivateRoute>
+          <App />
+        </PrivateRoute>
+      ),
       children: [
         {
           path: '/',
@@ -46,10 +56,18 @@ const router = createBrowserRouter(
           element: <NewProduct />,
         },
         {
-          path: '/employee',
-          element: <Home />,
+          path: '/security',
+          element: <Security />,
         },
       ],
+    },
+    {
+      path: '/login',
+      element: (
+        <RedirectIfLoggedIn>
+          <Login />
+        </RedirectIfLoggedIn>
+      ),
     },
   ],
   {
@@ -58,9 +76,13 @@ const router = createBrowserRouter(
 );
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <CurrentPageProvider>
-    <LayoutProvider>
-      <RouterProvider router={router} />
-    </LayoutProvider>
-  </CurrentPageProvider>,
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor}>
+      <CurrentPageProvider>
+        <LayoutProvider>
+          <RouterProvider router={router} />
+        </LayoutProvider>
+      </CurrentPageProvider>
+    </PersistGate>
+  </Provider>,
 );

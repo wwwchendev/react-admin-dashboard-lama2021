@@ -15,15 +15,13 @@ import {
 } from '@material-ui/icons';
 import { tablet } from '@/responsive';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useLayout } from '../context/LayoutContext';
 import { useCurrentPage } from '../context/CurrentPageContext';
 
 const Container = styled.div`
   /* transition: all 0.1s ease; */
   position: absolute;
-  background-color: hsl(240, 100%, 99.2156862745098%);
+  background-color: #fbfbff;
   min-width: ${p => {
     /* console.log(p.$layout.sidebar) */
     return p.$layout.sidebar.actived ? p.$layout.sidebar.width : '0%';
@@ -45,8 +43,8 @@ const Wrapper = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
   ${tablet({
-    minWidth: '25%',
-  })};
+  minWidth: '25%',
+})};
 `;
 
 const SidebarList = styled.div`
@@ -81,8 +79,11 @@ const Item = styled.li`
   align-items: center;
   border-radius: 10px;
   white-space: nowrap;
-  background-color: ${props =>
-    props.$path === props.$activePage ? 'rgb(240, 240, 255)' : ''};
+  background-color: ${props => {
+    /* console.log(props.$path, props.$activePage) */
+    return props.$path === props.$activePage ? 'rgb(240, 240, 255)' : ''
+  }
+  };
   &:hover {
     background-color: rgb(240, 240, 255);
   }
@@ -124,8 +125,8 @@ const ToggleShowBtn = styled.button`
     animation: ${bounceAnimation} 1s ease infinite;
   }
   ${tablet({
-    left: p => (p.$layout.sidebar.actived ? p.$layout.sidebar.widthSm : '0'),
-  })};
+  left: p => (p.$layout.sidebar.actived ? p.$layout.sidebar.widthSm : '0'),
+})};
 `;
 export const Sidebar = () => {
   const navigator = useNavigate();
@@ -137,6 +138,7 @@ export const Sidebar = () => {
   const [serviceOpen, setServiceOpen] = useState(true);
   const [frontendOpen, setFrontendOpen] = useState(true);
   const [securityOpen, setSecurityOpen] = useState(true);
+
 
   return (
     <>
@@ -248,7 +250,7 @@ export const Sidebar = () => {
                   $activePage={currentPage}
                   $path={'/employee'}
                   onClick={() => {
-                    navigator('/employee');
+                    // navigator('/employee');
                   }}
                 >
                   <IconWrapper>
@@ -256,7 +258,13 @@ export const Sidebar = () => {
                   </IconWrapper>
                   員工帳號管理
                 </Item>
-                <Item $activePage={currentPage} $path={null}>
+                <Item
+                  $activePage={currentPage}
+                  $path={'/security'}
+                  onClick={() => {
+                    navigator('/security');
+                  }}
+                >
                   <IconWrapper>
                     <Timeline />
                   </IconWrapper>
