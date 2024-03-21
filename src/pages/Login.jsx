@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Navbar } from '@/components';
 import { useDispatch, useSelector } from 'react-redux';
-import { AuthRequests, clearError } from '@/store/employee';
+import { AuthRequests, clearError } from '@/store/authEmployee';
 import styled from 'styled-components';
 
 const Form = styled.form`
@@ -15,7 +15,7 @@ const Login = () => {
     password: '',
   });
   const dispatch = useDispatch();
-  const employeeState = useSelector(state => state.employee);
+  const employeeState = useSelector(state => state.authEmployee);
 
   const handleChange = e => {
     if (employeeState.error) {
@@ -52,6 +52,7 @@ const Login = () => {
           name='employeeId'
           type='text'
           placeholder='員工編號'
+          autoComplete='username'
           onChange={handleChange}
         />
         <input
@@ -59,11 +60,10 @@ const Login = () => {
           name='password'
           type='password'
           placeholder='密碼'
+          autoComplete='current-password'
           onChange={handleChange}
         />
-        {
-          <span>{employeeState?.error?.message}</span>
-        }
+        {<span>{employeeState?.error?.message}</span>}
         <button
           type='submit'
           disabled={employeeState.loading}

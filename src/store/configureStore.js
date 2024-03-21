@@ -5,7 +5,7 @@ import api from '@/store/middleware/api';
 import error from '@/store/middleware/error';
 //reducer
 import employeeReducer from '@/store/employee';
-import loginRecordReducer from '@/store/loginRecord';
+import authEmployeeReducer from '@/store/authEmployee';
 import userReducer from '@/store/user';
 import productReducer from '@/store/products';
 import storageReducer from '@/store/storage';
@@ -23,21 +23,21 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
-const persistConfig = {
-  key: 'root',
-  version: 1,
-  storage,
-};
-
 const rootReducer = combineReducers({
   employee: employeeReducer,
-  loginRecord: loginRecordReducer,
+  authEmployee: authEmployeeReducer,
   user: userReducer,
   product: productReducer,
   storage: storageReducer,
 });
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistConfig = {
+  key: 'root',
+  version: 1,
+  storage,
+  // whitelist: ['positions'],
+};
 
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 const store = configureStore({
   reducer: persistedReducer,
   middleware: getDefaultMiddleware =>

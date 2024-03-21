@@ -5,16 +5,47 @@
 import { useLocation, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
+
+//登入才能檢視
 export const PrivateRoute = ({ children }) => {
-  const { currentEmployee, loading } = useSelector(state => state.employee);
+  const { data, loading, error } = useSelector(state => state.authEmployee);
   const location = useLocation();
-  if (loading) {
-    return <div>載入中...</div>;
+  if (loading === true && data === null) {
+    console.log(loading);
+    return <div>載入中0...</div>;
+  }
+  //如果currentEmployee.accessToken不存在轉址到登入頁面
+  if (!data) {
+    return <Navigate to='/login' state={{ from: location }} replace></Navigate>;
   }
 
+  return children;
+};
+
+export const RedirectIfLoggedIn = ({ children }) => {
+  const { data, loading, error } = useSelector(state => state.authEmployee);
+  const location = useLocation();
+
+  if (loading) {
+    return <div>載入中1...</div>;
+  }
+  if (data && data.accessToken) {
+    return <Navigate to='/' state={{ from: location }} replace></Navigate>;
+  }
+
+  return children;
+};
+
+//是主管才能檢視
+export const RedirectIfSupervisor = ({ children }) => {
+  const { data, loading, error } = useSelector(state => state.authEmployee);
+  const location = useLocation();
+  if (loading) {
+    return <div>載入中2...</div>;
+  }
   //如果currentEmployee.accessToken不存在轉址到登入頁面
-  if (!currentEmployee || !currentEmployee.accessToken) {
-    return <Navigate to='/login' state={{ from: location }} replace></Navigate>;
+  if (!data || data.role !== '主管') {
+    return <Navigate to={location.state?.from || '/'} replace></Navigate>;
   }
 
   return children;

@@ -7,15 +7,20 @@ import Home from '@/pages/Home';
 import User from '@/pages/User';
 import Users from '@/pages/Users';
 import Products from './pages/Products';
-import Security from './pages/Security';
 import { NewUser } from './pages/NewUser';
 import Product from './pages/Product';
 import NewProduct from './pages/NewProduct';
 import Login from './pages/Login';
+
+import { Employee, Security, ChangePassword, ContactRecords } from './pages';
 import store, { persistor } from '@/store/configureStore';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import { PrivateRoute, RedirectIfLoggedIn } from '@/ProtectedRoute';
+import {
+  PrivateRoute,
+  RedirectIfSupervisor,
+  RedirectIfLoggedIn,
+} from '@/ProtectedRoute';
 
 const router = createBrowserRouter(
   [
@@ -54,6 +59,22 @@ const router = createBrowserRouter(
         {
           path: '/newProduct',
           element: <NewProduct />,
+        },
+        {
+          path: '/contactRecords',
+          element: <ContactRecords />,
+        },
+        {
+          path: '/employee',
+          element: (
+            <RedirectIfSupervisor>
+              <Employee />
+            </RedirectIfSupervisor>
+          ),
+        },
+        {
+          path: '/employee/changePassword',
+          element: <ChangePassword />,
         },
         {
           path: '/security',

@@ -4,7 +4,7 @@ import { NotificationsNone, Language, Settings } from '@material-ui/icons';
 import { tablet } from '@/responsive';
 import { useLayout } from '../context/LayoutContext';
 import { useDispatch, useSelector } from 'react-redux';
-import { AuthRequests } from '@/store/employee';
+import { AuthRequests } from '@/store/authEmployee';
 
 const baseUrl =
   import.meta.env.VITE_BASENAME === '/' ? '' : import.meta.env.VITE_BASENAME;
@@ -78,24 +78,11 @@ const Right = styled.div`
   gap: 20px;
   padding-right: 20px;
 `;
-const AvatarWrapper = styled.div`
-  width: 26px;
-  height: 26px;
-  overflow: hidden;
-  border-radius: 50%;
-  background-image: url('${baseUrl}/images/icons/common/account.svg');
-  background-size: 100%;
-  /* background: #000; */
-  & > img {
-    width: 100%;
-    object-fit: cover;
-  }
-`;
 
 export const Navbar = () => {
   const navigate = useNavigate();
   const { elState } = useLayout();
-  const employee = useSelector(state => state.employee.currentEmployee);
+  const employee = useSelector(state => state.authEmployee.data);
   const dispatch = useDispatch();
   const handleLogout = e => {
     e.preventDefault();
@@ -114,23 +101,23 @@ export const Navbar = () => {
           </Logo>
         </Left>
         <Right>
-          {
-            employee && (<>
+          {/* {JSON.stringify(employee)} */}
+          {employee && employee.accessToken && (
+            <>
               <MenuItem
               // onClick={() => {
               //   navigate('/#account');
               // }}
               >
-                <p>{employee.name} ( {employee.employeeId} )</p>
+                <p>
+                  {employee.name} ( {employee.employeeId} )
+                </p>
               </MenuItem>
-              <MenuItem
-                onClick={handleLogout}
-              >
+              <MenuItem onClick={handleLogout}>
                 <p>登出</p>
               </MenuItem>
             </>
-            )
-          }
+          )}
           {/* <MenuItem
             onClick={() => {
               navigate('/#notifications');

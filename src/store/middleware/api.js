@@ -15,7 +15,6 @@ const api = store => next => async action => {
     method,
     data,
   };
-  console.log(`${requestConfig.baseURL}${requestConfig.url}`);
   if (headers) {
     requestConfig.headers = headers;
   }
@@ -26,7 +25,10 @@ const api = store => next => async action => {
     dispatch({ type: onSuccess, payload: response.data });
   } catch (error) {
     console.log(error);
+    // console.log('API中間件捕捉錯誤:', `${requestConfig.baseURL}${requestConfig.url}`, error.response.data);
+    //存store錯誤
     dispatch({ type: onError, payload: error.response.data });
+    //打印錯誤
     dispatch({ type: 'SHOW_ERROR', payload: error.response.data });
   }
 };

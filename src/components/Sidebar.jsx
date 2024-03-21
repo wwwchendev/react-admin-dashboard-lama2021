@@ -12,11 +12,14 @@ import {
   KeyboardArrowDown,
   FirstPage,
   LastPage,
+  FiberPinOutlined,
+  SmsOutlined
 } from '@material-ui/icons';
 import { tablet } from '@/responsive';
 import { useNavigate } from 'react-router-dom';
 import { useLayout } from '../context/LayoutContext';
 import { useCurrentPage } from '../context/CurrentPageContext';
+import { useSelector } from 'react-redux';
 
 const Container = styled.div`
   /* transition: all 0.1s ease; */
@@ -75,7 +78,7 @@ const Item = styled.li`
   transition: height 1s ease;
   padding: 5px;
   cursor: pointer;
-  display: flex;
+  display: ${props => (props.$show ? 'flex' : 'none')};
   align-items: center;
   border-radius: 10px;
   white-space: nowrap;
@@ -132,13 +135,12 @@ export const Sidebar = () => {
   const navigator = useNavigate();
   const { elState, toggleSidebar } = useLayout();
   const { currentPage } = useCurrentPage();
-
+  const authEmployee = useSelector(state => state.authEmployee);
   //分類是否打開
   const [salesOpen, setSalesOpen] = useState(true);
   const [serviceOpen, setServiceOpen] = useState(true);
   const [frontendOpen, setFrontendOpen] = useState(true);
   const [securityOpen, setSecurityOpen] = useState(true);
-
 
   return (
     <>
@@ -159,6 +161,7 @@ export const Sidebar = () => {
                 onClick={() => {
                   navigator('/');
                 }}
+                $show={true}
               >
                 <IconWrapper>
                   <LineStyle />
@@ -173,14 +176,20 @@ export const Sidebar = () => {
               </Title>
 
               <Group $isActived={salesOpen}>
-                <Item $activePage={currentPage} $path={null}>
+                <Item
+                  $activePage={currentPage}
+                  $path={null}
+                  $show={true}>
                   <IconWrapper>
                     <AttachMoney />
                   </IconWrapper>
                   訂單管理
                 </Item>
 
-                <Item $activePage={currentPage} $path={null}>
+                <Item
+                  $activePage={currentPage}
+                  $path={null}
+                  $show={true}>
                   <IconWrapper>
                     <ReceiptOutlined />
                   </IconWrapper>
@@ -202,17 +211,25 @@ export const Sidebar = () => {
                   onClick={() => {
                     navigator('/users');
                   }}
+                  $show={true}
                 >
                   <IconWrapper>
                     <People />
                   </IconWrapper>
                   會員資料維護
                 </Item>
-                <Item $activePage={currentPage} $path={null}>
+                <Item
+                  $activePage={currentPage}
+                  $path={'/contactRecords'}
+                  $show={true}
+                  onClick={() => {
+                    navigator('/contactRecords');
+                  }}
+                >
                   <IconWrapper>
-                    <MailOutline />
+                    <SmsOutlined />
                   </IconWrapper>
-                  客服信箱
+                  客服紀錄
                 </Item>
               </Group>
             </SidebarList>
@@ -230,6 +247,7 @@ export const Sidebar = () => {
                   onClick={() => {
                     navigator('/products');
                   }}
+                  $show={true}
                 >
                   <IconWrapper>
                     <Storefront />
@@ -246,24 +264,42 @@ export const Sidebar = () => {
               </Title>
 
               <Group $isActived={securityOpen}>
+
+                <Item
+                  $activePage={currentPage}
+                  $path={'/employee/changePassword'}
+                  onClick={() => {
+                    navigator('/employee/changePassword');
+                  }}
+                  $show={true}
+                >
+                  <IconWrapper>
+                    <FiberPinOutlined />
+                  </IconWrapper>
+                  變更密碼
+                </Item>
+
                 <Item
                   $activePage={currentPage}
                   $path={'/employee'}
                   onClick={() => {
-                    // navigator('/employee');
+                    navigator('/employee');
                   }}
+                  $show={authEmployee.data.role === '主管'}
                 >
                   <IconWrapper>
                     <WorkOutline />
                   </IconWrapper>
                   員工帳號管理
                 </Item>
+
                 <Item
                   $activePage={currentPage}
                   $path={'/security'}
                   onClick={() => {
                     navigator('/security');
                   }}
+                  $show={true}
                 >
                   <IconWrapper>
                     <Timeline />

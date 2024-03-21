@@ -1,11 +1,11 @@
 import { PageLayout, } from '@/components';
 import { useCurrentPage } from '../context/CurrentPageContext';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import { DataGrid } from '@material-ui/data-grid';
 //取得資料+請求方法
 import { useSelector, useDispatch } from 'react-redux';
-import { loginRecordRequests } from '@/store/loginRecord';
+import { EmployeeRequests } from '@/store/employee';
 
 // 標題
 const TitleContainer = styled.div`
@@ -17,26 +17,31 @@ const TitleContainer = styled.div`
   }
 `;
 
-const Home = () => {
+const Button = styled.div`
+  color: ${props => (props.$success ? '#5cc55f' : '#d15252')};
+  padding: 5px 10px;
+  border-radius: 5px;
+`;
+
+export const Security = () => {
   const { setCurrentPage } = useCurrentPage();
+  //TOKEN
+  const authEmployeeState = useSelector(state => state.authEmployee);
+  const TOKEN = authEmployeeState.data?.accessToken
+  //REDUX
   const dispatch = useDispatch();
   const employeeState = useSelector(state => state.employee);
-  const loginRecordState = useSelector(state => state.loginRecord);
 
   useEffect(() => {
     setCurrentPage('/security');
-    fetchData()
+    dispatch(EmployeeRequests.getRecords(TOKEN))
   }, []);
-
-  const fetchData = async () => {
-    await dispatch(loginRecordRequests.getAll())
-  }
 
   const columns = [
     {
       field: 'no',
       headerName: '序號',
-      width: 120,
+      width: 105,
     },
     {
       field: 'time',
@@ -44,39 +49,57 @@ const Home = () => {
       width: 200,
     },
     {
-      field: 'name',
-      headerName: '姓名',
+      field: 'isSuccess',
+      headerName: '登入請求',
       width: 150,
+      renderCell: params => {
+        const isSuccess = params.row.isSuccess === '成功'
+        return (
+          <Button $success={isSuccess}>
+            {isSuccess ? '完成' : '⛔拒絕'}
+          </Button>
+        );
+      },
     },
     {
-      field: 'position',
+      field: 'name',
+      headerName: '姓名',
+      width: 130,
+    },
+    {
+      field: 'employeeId',
+      headerName: '員編',
+      width: 120,
+    },
+    {
+      field: 'department',
+      headerName: '部門',
+      width: 120,
+    },
+    {
+      field: 'section',
       headerName: '單位',
-      width: 200,
+      width: 120,
     },
     {
       field: 'permission',
       headerName: '權限',
-      width: 150,
-    },
-    {
-      field: 'isSuccess',
-      headerName: '成功失敗',
-      width: 150,
+      width: 130,
     }
   ];
 
-
-  const rows = loginRecordState.data.map((record, index) => {
+  const rowsSrc = employeeState.loginRecords.data || []
+  const rows = rowsSrc.map((record, index) => {
     const { _id, employeeId, position, name, role, success, loginTime } = record;
     return {
       no: index + 1,
       time: new Date(loginTime).toLocaleString('zh-TW', {
         timeZone: 'Asia/Taipei',
       }),
-      name: name ? `${name} (${employeeId || ''})` : 'N/A',
-      position: position
-        ? `${position.department} ${position.section || ''}`
-        : 'N/A',
+      name: name || 'N/A',
+      employeeId: employeeId || 'N/A',
+      department: position ? position.department : 'N/A',
+      section: position ? position.section : 'N/A',
       permission: role || 'N/A',
       isSuccess: success ? '成功' : '失敗',
     };
@@ -87,6 +110,9 @@ const Home = () => {
       <TitleContainer>
         <h1>近期登入紀錄</h1>
       </TitleContainer>
+      {/* {JSON.stringify(TOKEN)} */}
+      {/* {JSON.stringify(employeeState.loginRecords.data)} */}
+      {/* {JSON.stringify(authEmployeeState.data)} */}
       <DataGrid
         rows={rows}
         columns={columns}
@@ -97,7 +123,6 @@ const Home = () => {
         disableSelectionOnClick
       />
     </PageLayout>
+
   );
 };
-
-export default Home;
