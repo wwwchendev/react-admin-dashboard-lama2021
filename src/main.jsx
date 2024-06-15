@@ -1,15 +1,49 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+//context
+import { ConfigsProvider } from './context/ConfigsContext';
+//redux
+import store, { persistor } from '@/store/configureStore';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+//route
 import ReactDOM from 'react-dom/client';
-import { LayoutProvider } from './context/LayoutContext';
-import { CurrentPageProvider } from './context/CurrentPageContext';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { RequireLogin, RedirectIfLogin, RequireManager } from '@/middleware';
+//page
 import App from '@/App';
-import Home from '@/pages/Home';
-import User from '@/pages/User';
-import Users from '@/pages/Users';
-import Products from './pages/Products';
-import { NewUser } from './pages/NewUser';
-import Product from './pages/Product';
-import NewProduct from './pages/NewProduct';
+import {
+  Login,
+  ForgetPassword,
+  ResetPassword,
+  Employee,
+  JobStructure,
+  BulletinBoard,
+  AddBulletin,
+  EditBulletin,
+  ContactHistory,
+  User,
+  Home,
+  Product,
+  AddProduct,
+  EditProduct,
+  LoginHistory,
+  UpdatePassword,
+  ProductCategory,
+  News,
+  AddNews,
+  EditNews,
+  Invoice,
+  Order,
+  AddOrder,
+  SingleOrder,
+  Logistic,
+  SingleLogistic,
+} from '@/pages';
+
+//測試元件
+// import * as Common from '@/components/common';
+// import * as Layout from '@/components/layout';
+// console.log('檢視Common', Common);
+// console.log('檢視Layout', Layout);
 
 const router = createBrowserRouter(
   [
@@ -19,37 +53,225 @@ const router = createBrowserRouter(
       children: [
         {
           path: '/',
-          element: <Home />,
+          element: (
+            <RequireLogin>
+              <Home />
+            </RequireLogin>
+          ),
+        },
+        // {
+        //   path: '/bulletinBoard',
+        //   element: (
+        //     <RequireLogin>
+        //       <BulletinBoard />
+        //     </RequireLogin>
+        //   ),
+        // },
+        // {
+        //   path: '/bulletin/create',
+        //   element: (
+        //     <RequireLogin>
+        //       <AddBulletin />
+        //     </RequireLogin>
+        //   ),
+        // },
+        // {
+        //   path: '/bulletin/edit/:id',
+        //   element: (
+        //     <RequireLogin>
+        //       <EditBulletin />
+        //     </RequireLogin>
+        //   ),
+        // },
+        {
+          path: '/user',
+          element: (
+            <RequireLogin>
+              <User />
+            </RequireLogin>
+          ),
         },
         {
-          path: '/users',
-          element: <Users />,
+          path: '/product',
+          element: (
+            <RequireLogin>
+              <Product />
+            </RequireLogin>
+          ),
         },
         {
-          path: '/user/:id',
-          element: <User />,
+          path: '/product/create',
+          element: (
+            <RequireLogin>
+              <AddProduct />
+            </RequireLogin>
+          ),
         },
         {
-          path: '/newUser',
-          element: <NewUser />,
+          path: '/product/edit/:id',
+          element: (
+            <RequireLogin>
+              <EditProduct />
+            </RequireLogin>
+          ),
         },
         {
-          path: '/products',
-          element: <Products />,
+          path: '/productCategory',
+          element: (
+            <RequireLogin>
+              <ProductCategory />
+            </RequireLogin>
+          ),
         },
         {
-          path: '/product/:id',
-          element: <Product />,
+          path: '/news',
+          element: (
+            <RequireLogin>
+              <News />
+            </RequireLogin>
+          ),
         },
         {
-          path: '/newProduct',
-          element: <NewProduct />,
+          path: '/news/create',
+          element: (
+            <RequireLogin>
+              <AddNews />
+            </RequireLogin>
+          ),
+        },
+        {
+          path: '/news/edit/:id',
+          element: (
+            <RequireLogin>
+              <EditNews />
+            </RequireLogin>
+          ),
+        },
+        {
+          path: '/order',
+          element: (
+            <RequireLogin>
+              <Order />
+            </RequireLogin>
+          ),
+        },
+        {
+          path: '/order/create',
+          element: (
+            <RequireLogin>
+              <AddOrder />
+            </RequireLogin>
+          ),
+        },
+        {
+          path: '/order/edit/:id',
+          element: (
+            <RequireLogin>
+              <SingleOrder />
+            </RequireLogin>
+          ),
+        },
+        {
+          path: '/order/:id',
+          element: (
+            <RequireLogin>
+              <SingleOrder />
+            </RequireLogin>
+          ),
+        },
+        {
+          path: '/invoice',
+          element: (
+            <RequireLogin>
+              <Invoice />
+            </RequireLogin>
+          ),
+        },
+        {
+          path: '/logistic',
+          element: (
+            <RequireLogin>
+              <Logistic />
+            </RequireLogin>
+          ),
+        },
+        {
+          path: '/logistic/:id',
+          element: (
+            <RequireLogin>
+              <SingleLogistic />
+            </RequireLogin>
+          ),
+        },
+        {
+          path: '/logistic/edit/:id',
+          element: (
+            <RequireLogin>
+              <SingleLogistic />
+            </RequireLogin>
+          ),
+        },
+        {
+          path: '/jobStructure',
+          element: (
+            <RequireLogin>
+              <JobStructure />
+            </RequireLogin>
+          ),
+        },
+        {
+          path: '/contactHistory',
+          element: (
+            <RequireLogin>
+              <ContactHistory />
+            </RequireLogin>
+          ),
         },
         {
           path: '/employee',
-          element: <Home />,
+          element: (
+            <RequireManager>
+              <Employee />
+            </RequireManager>
+          ),
+        },
+        {
+          path: '/employee/updatePassword',
+          element: <UpdatePassword />,
+        },
+        {
+          path: '/loginHistory',
+          element: (
+            <RequireLogin>
+              <LoginHistory />
+            </RequireLogin>
+          ),
         },
       ],
+    },
+    {
+      path: '/login',
+      element: (
+        <RedirectIfLogin>
+          <Login />
+        </RedirectIfLogin>
+      ),
+    },
+    {
+      path: '/forgetPassword',
+      element: (
+        <RedirectIfLogin>
+          <ForgetPassword />
+        </RedirectIfLogin>
+      ),
+    },
+    {
+      path: '/resetPassword',
+      element: (
+        <RedirectIfLogin>
+          <ResetPassword />
+        </RedirectIfLogin>
+      ),
     },
   ],
   {
@@ -58,9 +280,11 @@ const router = createBrowserRouter(
 );
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <CurrentPageProvider>
-    <LayoutProvider>
-      <RouterProvider router={router} />
-    </LayoutProvider>
-  </CurrentPageProvider>,
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor}>
+      <ConfigsProvider>
+        <RouterProvider router={router} />
+      </ConfigsProvider>
+    </PersistGate>
+  </Provider>,
 );

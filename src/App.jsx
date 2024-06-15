@@ -1,18 +1,19 @@
 import { Outlet } from 'react-router-dom';
-import { Navbar, Sidebar } from '@/components';
 import styled from 'styled-components';
+import * as Layout from '@/components/layout';
 
 const Container = styled.div`
   display: flex;
   position: relative;
+  overflow: hidden;
 `;
 
 function App() {
   return (
     <>
-      <Navbar />
+      <Layout.Navbar />
       <Container>
-        <Sidebar />
+        <Layout.Sidebar />
         <Outlet />
       </Container>
     </>
