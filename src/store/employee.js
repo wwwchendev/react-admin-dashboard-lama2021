@@ -30,7 +30,8 @@ const employeeSlice = createSlice({
     },
     requestEmployeesSuccess: (state, action) => {
       state.employees.loading = false;
-      state.employees.data = action.payload;
+      // console.log(action.payload);
+      state.employees.data = action.payload.data;
     },
     requestEmployeesFailed: (state, action) => {
       state.employees.loading = false;
@@ -38,13 +39,13 @@ const employeeSlice = createSlice({
     },
     //新增員工資料
     addEmployeeSuccess: (state, action) => {
-      state.employees.data.push(action.payload);
-      // const newEmployee = action.payload;
-      //
+      state.employees.data.push(action.payload.data);
+      // console.log(action.payload);
       state.employees.loading = false;
     },
     //更新員工資料
     updateEmployeeSuccess: (state, action) => {
+      // console.log(action.payload.data);
       const updatedEmployee = action.payload.data;
       const {
         name,
@@ -97,12 +98,13 @@ const employeeSlice = createSlice({
     },
     requestLoginRecordsSuccess: (state, action) => {
       state.loginRecords.loading = false;
-      state.loginRecords.data = action.payload;
+      // console.log(action.payload);
+      state.loginRecords.data = action.payload.data;
     },
     requestLoginRecordsFailed: (state, action) => {
       state.loginRecords.loading = false;
       state.loginRecords.error = action.payload;
-    }
+    },
   },
 });
 export default employeeSlice.reducer;
@@ -124,13 +126,13 @@ export const {
 
 const apiPath = '/employee';
 
-export const getEmployees = (TOKEN) => {
+export const getEmployees = TOKEN => {
   //請從react元件當中獲取token並傳遞參數
   return apiCallBegan({
     url: `${apiPath}/all?includeNotEnabled=true`,
     method: 'get',
     data: null,
-    headers: { token: `Bearer ${TOKEN}` },
+    headers: { authorization: `Bearer ${TOKEN}` },
     onStart: requestEmployeesStarted.type,
     onSuccess: requestEmployeesSuccess.type,
     onError: requestEmployeesFailed.type,
@@ -139,10 +141,10 @@ export const getEmployees = (TOKEN) => {
 export const addEmployee = (TOKEN, data) => {
   //請從react元件當中獲取token並傳遞參數
   return apiCallBegan({
-    url: `${apiPath}`,
+    url: `/auth/register/employee`,
     method: 'post',
     data: data,
-    headers: { token: `Bearer ${TOKEN}` },
+    headers: { authorization: `Bearer ${TOKEN}` },
     onStart: requestEmployeesStarted.type,
     onSuccess: addEmployeeSuccess.type,
     onError: requestEmployeesFailed.type,
@@ -154,37 +156,37 @@ export const updateEmployee = (TOKEN, employeeId, data) => {
     url: `${apiPath}/${employeeId}`,
     method: 'put',
     data: data,
-    headers: { token: `Bearer ${TOKEN}` },
+    headers: { authorization: `Bearer ${TOKEN}` },
     onStart: requestEmployeesStarted.type,
     onSuccess: updateEmployeeSuccess.type,
     onError: requestEmployeesFailed.type,
   });
 };
-export const getLoginRecords = (TOKEN) => {
+export const getLoginRecords = TOKEN => {
   //請從react元件當中獲取token並傳遞參數
   return apiCallBegan({
-    url: `${apiPath}/loginRecords`,
+    url: `/auth/getLoginHistory/employee`,
     method: 'get',
     data: null,
-    headers: { token: `Bearer ${TOKEN}` },
+    headers: { authorization: `Bearer ${TOKEN}` },
     onStart: requestLoginRecordsStarted.type,
     onSuccess: requestLoginRecordsSuccess.type,
     onError: requestLoginRecordsFailed.type,
   });
 };
-export const getPositions = (TOKEN) => {
+export const getPositions = TOKEN => {
   return apiCallBegan({
     url: `${apiPath}/positions`,
     method: 'get',
     data: null,
-    headers: { token: `Bearer ${TOKEN}` },
+    headers: { authorization: `Bearer ${TOKEN}` },
     onStart: requestPositionsStarted.type,
     onSuccess: requestPositionsSuccess.type,
     onError: requestPositionsFailed.type,
   });
 };
 
-export const EmployeeRequests = {
+export const employeeRequests = {
   getAll: getEmployees,
   add: addEmployee,
   update: updateEmployee,
