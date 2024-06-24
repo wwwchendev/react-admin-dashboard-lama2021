@@ -50,7 +50,7 @@ const api = store => next => async action => {
     const response = await axios.request(requestConfig);
     dispatch({ type: onSuccess, payload: response.data });
   } catch (error) {
-
+    console.log(error)
     if (error.response.data.errors.token === 'jwt expired') {
       console.log('過期處理');
     }

@@ -69,8 +69,9 @@ export const Home = () => {
           `${import.meta.env.VITE_APIURL}/order/status`,
           { headers: { Authorization: `Bearer ${TOKEN}` } },
         );
+        const data = res.data.data.sort((a, b) => a._id - b._id);
 
-        res.data.data.map(item =>
+        data.map(item =>
           setOrderStats(prev => [
             ...prev,
             { name: MONTHS[item._id - 1], '銷售額': item.totalAmount },

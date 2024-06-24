@@ -59,7 +59,9 @@ export const EditNews = () => {
     richContent: currentData?.richContent,
     display: currentData?.display.toString(),
     createdBy: currentData?.createdBy,
+    lastEditedBy: currentData?.lastEditedBy,
   };
+
   const [form, setForm] = useState(initialFormData);
   //表單提示
   const initPromptMessage = { default: '' };
@@ -94,6 +96,7 @@ export const EditNews = () => {
     } else if (operateType === 'updateNews') {
       if (submitClicked & (newsState.error === null)) {
         alert('已更新文章');
+        setSubmitClicked(false)
       }
     }
   }, [newsState.data]);
@@ -141,6 +144,7 @@ export const EditNews = () => {
   };
   const handleFormSubmit = async e => {
     e.preventDefault();
+    console.log(form)
     const {
       newsNumber,
       title,
@@ -165,6 +169,7 @@ export const EditNews = () => {
         'richContent': richContent,
         'display': display,
         'createdBy': createdBy,
+        'lastEditedBy': authEmployeeState.data.employeeId
       };
       await dispatch(newsRequests.update(TOKEN, currentData._id, newData));
     } else {

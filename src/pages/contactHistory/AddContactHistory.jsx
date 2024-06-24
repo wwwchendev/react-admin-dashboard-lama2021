@@ -46,7 +46,7 @@ const AddContactHistory = props => {
     <>
       <FormWrapper>
         <FormTitle $margin={'0 0 0.5rem 0'}>新增聯絡紀錄</FormTitle>
-        <FormBody $padding={'0'}>
+        <FormBody >
           {/* 左側聯絡綱要 */}
           <FormSide $gap={'1.2rem'}>
             <FormRow>
@@ -400,16 +400,17 @@ const AddContactHistory = props => {
                 {authEmployeeState.data.name} (
                 {authEmployeeState.data.employeeId})
               </Span>
+
+              <Flexbox $justifyContent={'flex-satrt'}>
+                <Span $color={'#5cc55f'}>{promptMessage?.default}</Span>
+                <Span $color={'#d15252'}>
+                  {contactHistoryState.error?.message &&
+                    `⛔${contactHistoryState.error?.message}`}
+                </Span>
+              </Flexbox>
             </Flexbox>
             {/* <pre>{JSON.stringify(addContactHistoryFormData, null, 2)}</pre> */}
 
-            <Flexbox $justifyContent={'flex-satrt'}>
-              <Span $color={'#5cc55f'}>{promptMessage?.default}</Span>
-              <Span $color={'#d15252'}>
-                {contactHistoryState.error?.message &&
-                  `⛔${contactHistoryState.error?.message}`}
-              </Span>
-            </Flexbox>
           </FormSide>
         </FormBody>
         <Flexbox $gap={'8px'} $margin={'auto 0 0 0'}>

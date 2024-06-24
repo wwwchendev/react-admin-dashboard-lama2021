@@ -54,6 +54,7 @@ const WidgetLogistic = () => {
   //狀態
   const [stats, setStats] = useState({
     currentMonth: {
+      "待確認": 0,
       "待出貨": 0,
       "已出貨": 0,
       "待取貨": 0,
@@ -67,6 +68,7 @@ const WidgetLogistic = () => {
       "總計": 0
     },
     lastMonth: {
+      "待確認": 0,
       "待出貨": 0,
       "已出貨": 0,
       "待取貨": 0,
@@ -118,12 +120,12 @@ const WidgetLogistic = () => {
           </thead>
           <tbody>
             <tr>
-              <td>🕥待出貨</td>
-              <td>{stats.lastMonth['待出貨']}</td>
-              <td>{stats.currentMonth['待出貨']}</td>
+              <td>🕥待確認+待出貨</td>
+              <td>{stats.lastMonth['待確認'] + stats.lastMonth['待出貨']}</td>
+              <td>{stats.currentMonth['待確認'] + stats.currentMonth['待出貨']}</td>
             </tr>
             <tr>
-              <td>已出貨待取貨 </td>
+              <td>已出貨+待取貨 </td>
               <td>{stats.lastMonth['已出貨'] + stats.lastMonth['待取貨']}</td>
               <td>{stats.currentMonth['已出貨'] + stats.currentMonth['待取貨']}</td>
             </tr>
