@@ -109,7 +109,6 @@ export const AddOrder = () => {
     dispatch(productRequests.getAll(TOKEN));
   }, []);
 
-  //⚠️
   useEffect(() => {
     if (operateType === 'addOrder') {
       if (submitClicked & (orderState.error === null)) {
@@ -161,8 +160,8 @@ export const AddOrder = () => {
           type: value,
           option: '',
           invoice: {
-            type: prevState.payment.invoice.type,
-            carrierNumber: prevState.payment.invoice.carrierNumber,
+            type: prevState.payment?.invoice?.type,
+            carrierNumber: prevState.payment?.invoice?.carrierNumber,
           },
         },
       }));
@@ -250,7 +249,7 @@ export const AddOrder = () => {
         logistic: {
           ...prev.logistic,
           address: {
-            ...prev.logistic.address,
+            ...prev.logistic?.address,
             [name]: value,
           },
         },
@@ -263,7 +262,7 @@ export const AddOrder = () => {
         logistic: {
           ...prev.logistic,
           address: {
-            ...prev.logistic.address,
+            ...prev.logistic?.address,
             zipcode: '111',
             address: '大北路14號16號1樓',
             convenienceStore: {
@@ -316,16 +315,19 @@ export const AddOrder = () => {
       lastEditedBy,
       lastEditerName,
     } = form;
-
     if (
       username !== '' &&
       payment.type !== '' &&
-      payment.invoice.type !== '' &&
+      (payment?.type === '貨到付款' || (payment?.type === '線上付款',
+        payment.option !== '')) &&
+      (payment?.invoice?.type === '紙本發票' || (payment?.invoice?.type === '發票載具', form['payment']?.invoice?.carrierNumber !== '')) &&
       products.length !== 0 &&
-      logistic.address.zipcode !== '' &&
-      logistic.address.county !== '' &&
-      logistic.address.district !== '' &&
-      logistic.address.address !== '' &&
+      logistic.option !== '' &&
+      logistic?.address.zipcode !== '' &&
+      logistic?.address.county !== '' &&
+      logistic?.address.district !== '' &&
+      logistic?.address.address !== '' &&
+      (logistic?.option === '宅配到府' || logistic?.option !== '宅配到府' && form['logistic']?.address?.convenienceStore?.storeName !== '') &&
       logistic.receiver.receiverName !== '' &&
       logistic.receiver.receiverMobileNumber !== ''
     ) {
@@ -334,13 +336,13 @@ export const AddOrder = () => {
       const structuredProducts = products.map((item, index) => {
         return {
           productId: item.productId,
-          productNumber: item.productNumber, //🔥
+          productNumber: item.productNumber,
           productName: item.productName,
           variantId: item.variantId,
           variantName: item.variantName,
           specificationId: item.specificationId,
           specificationName: item.specificationName,
-          discountedPrice: item.discountedPrice, //🔥
+          discountedPrice: item.discountedPrice,
           quantity: item.quantity,
         };
       });
@@ -354,13 +356,13 @@ export const AddOrder = () => {
           option: logistic.option,
           fee: logistic.fee,
           address: {
-            zipcode: logistic.address?.zipcode,
-            county: logistic.address?.county,
-            district: logistic.address?.district,
-            address: logistic.address?.address,
+            zipcode: logistic?.address?.zipcode,
+            county: logistic?.address?.county,
+            district: logistic?.address?.district,
+            address: logistic?.address?.address,
             convenienceStore: {
-              storeName: logistic.address?.convenienceStore?.storeName,
-              storeId: logistic.address?.convenienceStore?.storeId,
+              storeName: logistic?.address?.convenienceStore?.storeName,
+              storeId: logistic?.address?.convenienceStore?.storeId,
             },
           },
           receiver: {
@@ -375,67 +377,185 @@ export const AddOrder = () => {
           type: payment?.type,
           option: payment?.option,
           invoice: {
-            type: payment.invoice.type,
-            carrierNumber: payment.invoice.carrierNumber,
+            type: payment?.invoice?.type,
+            carrierNumber: payment?.invoice?.carrierNumber,
           },
         },
         memo: memo,
         lastEditedBy: authEmployeeState.data.employeeId,
       };
-      console.log(newData);
 
       await dispatch(orderRequests.add(TOKEN, newData));
     } else {
-      if (form['address']?.zipcode === '') {
+      if (form['payment']?.type === '') {
         setPromptMessage(prev => {
           return {
             ...prev,
-            address: { ...prev.address, zipcode: `郵遞區號欄位不得為空` },
+            payment: { ...prev.payment, type: `郵遞區號欄位不得為空` },
           };
         });
       }
-      if (form['address']?.county === '') {
+      if (form['payment']?.option === '') {
         setPromptMessage(prev => {
           return {
             ...prev,
-            address: { ...prev.address, county: `縣市欄位不得為空` },
+            payment: { ...prev.payment, option: `付款方式欄位不得為空` },
           };
         });
       }
-      if (form['address']?.district === '') {
+      if (form['payment']?.invoice?.type === '') {
         setPromptMessage(prev => {
           return {
             ...prev,
-            address: { ...prev.address, district: `鄉鎮市區欄位不得為空` },
+            payment: {
+              ...prev.payment,
+              invoice: {
+                ...prev?.payment?.invoice,
+                type: `發票開立方式欄位不得為空`
+              }
+            },
           };
         });
       }
-      if (form['address']?.address === '') {
+      if (form['payment']?.invoice?.type === '發票載具' && form['payment']?.invoice?.carrierNumber === '') {
         setPromptMessage(prev => {
           return {
             ...prev,
-            address: { ...prev.address, address: `詳細地址欄位不得為空` },
+            payment: {
+              ...prev.payment,
+              invoice: {
+                ...prev?.payment?.invoice,
+                carrierNumber: `載具號碼欄位不得為空`
+              }
+            },
           };
         });
       }
-      const requireField = [
-        'username',
-        'payment',
-        'products',
-        'logisticOption',
-        'address',
-      ];
+      if (form['products'].length === 0) {
+        setPromptMessage(prev => {
+          return {
+            ...prev,
+            products: `訂單商品欄位不得為空`,
+          };
+        });
+      }
+      if (form['logistic']?.option === '') {
+        setPromptMessage(prev => {
+          return {
+            ...prev,
+            logistic: {
+              ...prev.logistic,
+              option: `運送方式欄位不得為空`,
+            }
+          };
+        });
+      }
+      if (form['logistic']?.address.zipcode === '') {
+        setPromptMessage(prev => {
+          return {
+            ...prev,
+            logistic: {
+              ...prev.logistic,
+              address: {
+                ...prev?.logistic?.address,
+                zipcode: `郵遞區號不得為空`,
+              }
+            }
+          };
+        });
+      }
+      if (form['logistic']?.address.county === '') {
+        setPromptMessage(prev => {
+          return {
+            ...prev,
+            logistic: {
+              ...prev.logistic,
+              address: {
+                ...prev?.logistic?.address,
+                county: `縣市不得為空`,
+              }
+            }
+          };
+        });
+      }
+      if (form['logistic']?.address.district === '') {
+        setPromptMessage(prev => {
+          return {
+            ...prev,
+            logistic: {
+              ...prev.logistic,
+              address: {
+                ...prev?.logistic?.address,
+                district: `鄉鎮市區不得為空`,
+              }
+            }
+          };
+        });
+      }
+      if (form['logistic']?.address.address === '') {
+        setPromptMessage(prev => {
+          return {
+            ...prev,
+            logistic: {
+              ...prev.logistic,
+              address: {
+                ...prev?.logistic?.address,
+                address: `詳細地址欄位不得為空`,
+              }
+            }
+          };
+        });
+      }
+      if (form['logistic']?.address?.option !== '宅配到府' && form['logistic']?.address?.convenienceStore?.storeName === '') {
+        setPromptMessage(prev => {
+          return {
+            ...prev,
+            logistic: {
+              ...prev.logistic,
+              address: {
+                ...prev?.logistic?.address,
+                convenienceStore: {
+                  storeName: `選擇門市欄位不得為空`,
+                }
+              }
+            }
+          };
+        });
+      }
+      if (form['logistic']?.receiver?.receiverName === '') {
+        setPromptMessage(prev => {
+          return {
+            ...prev,
+            logistic: {
+              ...prev.logistic,
+              receiver: {
+                ...prev.logistic.receiver,
+                receiverName: `收件人名稱不得為空`
+              }
+            }
+          };
+        });
+      }
+      if (form['logistic']?.receiver?.receiverMobileNumber === '') {
+        setPromptMessage(prev => {
+          return {
+            ...prev,
+            logistic: {
+              ...prev.logistic,
+              receiver: {
+                ...prev.logistic.receiver,
+                receiverMobileNumber: `收件人電話不得為空`
+              }
+            }
+          };
+        });
+      }
+      const requireField = ['username'];
       requireField.forEach((f, idx) => {
         let emptyField;
         switch (f) {
           case 'username':
             emptyField = '用戶名稱欄位';
-            break;
-          case 'payment':
-            emptyField = '付款方式欄位';
-            break;
-          case 'logisticOption':
-            emptyField = '運送方式欄位';
             break;
           default:
             return;
@@ -879,7 +999,9 @@ export const AddOrder = () => {
                       <option value='信用卡'>信用卡</option>
                       <option value='LINE PAY'>LINE PAY</option>
                     </Select>
-                    <Span $color={'#d15252'}>{promptMessage?.payment}</Span>
+                    <Span $color={'#d15252'}>
+                      {promptMessage?.payment?.option}
+                    </Span>
                   </SelectWrapper>
                 </FormCol>
                 <FormCol $minWidth={'5rem'}>
@@ -888,11 +1010,6 @@ export const AddOrder = () => {
                     <Select
                       name='paymentStatus'
                       onChange={handleFormChange}
-                      $border={
-                        (promptMessage?.paymentStatus ||
-                          orderState.error?.errors.paymentStatus) &&
-                        '2px solid #d15252'
-                      }
                       value={form.paymentStatus}
                       disabled={true}
                     >
@@ -902,9 +1019,6 @@ export const AddOrder = () => {
                       <option value='尚未付款'>尚未付款</option>
                       <option value='已付款'>已付款</option>
                     </Select>
-                    <Span $color={'#d15252'}>
-                      {promptMessage?.paymentStatus}
-                    </Span>
                   </SelectWrapper>
                 </FormCol>
               </FormRow>
@@ -924,29 +1038,44 @@ export const AddOrder = () => {
                       disabled={submitClicked && !orderState.error}
                     >
                       <option value='' disabled>
-                        請選擇付款類型
+                        請選擇發票開立方式
                       </option>
                       <option value='紙本發票'>紙本發票</option>
                       <option value='發票載具'>發票載具</option>
                     </Select>
                     <Span $color={'#d15252'}>
-                      {promptMessage?.payment?.type}
+                      {promptMessage?.payment?.invoice?.type}
                     </Span>
                   </SelectWrapper>
                   <InputWrapper $height={'2.5rem'} $spanOffset={'-1.2rem'}>
-                    <Input
-                      name='carrierNumber'
-                      type='text'
-                      onChange={handleFormChange}
-                      value={form?.payment?.invoice?.carrierNumber}
-                      disabled={
-                        form?.payment?.invoice?.type !== '發票載具' ||
-                        (submitClicked && !orderState.error)
-                      }
-                    />
+                    {
+                      form['payment']?.invoice?.type === '發票載具' && <>
+                        <Input
+                          name='carrierNumber'
+                          type='text'
+                          onChange={handleFormChange}
+                          placeholder='載具號碼'
+                          $border={
+                            (promptMessage?.payment?.invoice?.carrierNumber ||
+                              orderState.error?.errors.payment?.invoice?.carrierNumber) &&
+                            '2px solid #d15252'
+                          }
+                          value={form?.payment?.invoice?.carrierNumber}
+                          disabled={
+                            form?.payment?.invoice?.type !== '發票載具' ||
+                            (submitClicked && !orderState.error)
+                          }
+                        />
+                        <Span $color={'#d15252'}>
+                          {promptMessage?.payment?.invoice?.carrierNumber}
+                        </Span>
+                      </>
+                    }
                   </InputWrapper>
                 </FormCol>
-                <FormCol $minWidth={'5rem'}></FormCol>
+                <FormCol $minWidth={'5rem'}>
+
+                </FormCol>
               </FormRow>
               <FormRow $gap={'24px'}>
                 <FormCol $minWidth={'5rem'} $minHeight={'260px'}>
@@ -982,6 +1111,14 @@ export const AddOrder = () => {
                   />
                 </FormCol>
               </FormRow>
+              <FormRow >
+                <FormCol $minWidth={'5rem'}>
+                  <label />
+                  <Span $color={'#d15252'}>
+                    {promptMessage?.products}
+                  </Span>
+                </FormCol>
+              </FormRow>
               {/* <pre><Span>{JSON.stringify(rowsSrc, null, 2)}</Span></pre> */}
               <FormRow $gap={'24px'}>
                 <FormCol $minWidth={'5rem'}>
@@ -1005,8 +1142,8 @@ export const AddOrder = () => {
                       name='logisticOption'
                       onChange={handleFormChange}
                       $border={
-                        (promptMessage?.logisticOption ||
-                          orderState.error?.errors.logisticOption) &&
+                        (promptMessage?.logistic?.option ||
+                          orderState.error?.errors?.logistic?.option) &&
                         '2px solid #d15252'
                       }
                       value={form.logistic.option}
@@ -1022,7 +1159,7 @@ export const AddOrder = () => {
                       </option>
                     </Select>
                     <Span $color={'#d15252'}>
-                      {promptMessage?.logisticOption}
+                      {promptMessage?.logistic?.option}
                     </Span>
                   </SelectWrapper>
                 </FormCol>
@@ -1059,6 +1196,112 @@ export const AddOrder = () => {
                   </Flexbox>
                 </FormCol>
               </FormRow>
+              {form.logistic.option === '宅配到府' && (
+                <FormRow $gap={'24px'}>
+                  <FormCol $minWidth={'5rem'}>
+                    <label>收貨地址</label>
+                    <InputWrapper
+                      $height={'2.5rem'}
+                      $spanOffset={'-1.2rem'}
+                      $border={
+                        (promptMessage?.logistic?.address?.zipcode ||
+                          orderState.error?.errors.logistic?.address?.zipcode) &&
+                        '2px solid #d15252'
+                      }
+                    >
+                      <Input
+                        name='zipcode'
+                        type='text'
+                        placeholder='郵遞區號'
+                        onChange={handleFormChange}
+                        value={form?.logistic?.address?.zipcode}
+                        disabled={submitClicked && !orderState.error}
+                      />
+                      <Span $color={'#d15252'}>
+                        {promptMessage?.logistic?.address?.zipcode}
+                      </Span>
+                      <Span $color={'#d15252'}>
+                        {orderState.error?.errors.address?.zipcode}
+                      </Span>
+                    </InputWrapper>
+                    <InputWrapper
+                      $height={'2.5rem'}
+                      $spanOffset={'-1.2rem'}
+                      $border={
+                        (promptMessage?.logistic?.address?.county ||
+                          orderState.error?.errors.logistic?.address?.county) &&
+                        '2px solid #d15252'
+                      }
+                    >
+                      <Input
+                        name='county'
+                        type='text'
+                        placeholder='縣市'
+                        onChange={handleFormChange}
+                        value={form?.logistic?.address?.county}
+                        disabled={submitClicked && !orderState.error}
+                      />
+                      <Span $color={'#d15252'}>
+                        {promptMessage?.logistic?.address?.county}
+                      </Span>
+                      <Span $color={'#d15252'}>
+                        {orderState.error?.errors?.logistic?.address?.county}
+                      </Span>
+                    </InputWrapper>
+                    <InputWrapper
+                      $height={'2.5rem'}
+                      $spanOffset={'-1.2rem'}
+                      $border={
+                        (promptMessage?.logistic?.address?.district ||
+                          orderState.error?.errors?.logistic?.address?.district) &&
+                        '2px solid #d15252'
+                      }
+                    >
+                      <Input
+                        name='district'
+                        type='text'
+                        placeholder='鄉鎮市區'
+                        onChange={handleFormChange}
+                        value={form?.logistic?.address?.district}
+                        disabled={submitClicked && !orderState.error}
+                      />
+                      <Span $color={'#d15252'}>
+                        {promptMessage?.logistic?.address?.district}
+                      </Span>
+                      <Span $color={'#d15252'}>
+                        {' '}
+                        {orderState.error?.errors?.logistic?.address?.district}
+                      </Span>
+                    </InputWrapper>
+                  </FormCol>
+                  <FormCol $minWidth={'5rem'}>
+                    <InputWrapper
+                      $height={'2.5rem'}
+                      $spanOffset={'-1.2rem'}
+                      $border={
+                        (promptMessage?.logistic?.address?.address ||
+                          orderState.error?.errors?.logistic?.address?.address) &&
+                        '2px solid #d15252'
+                      }
+                    >
+                      <Input
+                        name='address'
+                        type='text'
+                        placeholder='詳細地址'
+                        onChange={handleFormChange}
+                        value={form?.logistic?.address?.address}
+                        disabled={submitClicked && !orderState.error}
+                      />
+                      <Span $color={'#d15252'}>
+                        {promptMessage?.logistic?.address?.address}
+                      </Span>
+                      <Span $color={'#d15252'}>
+                        {orderState.error?.errors?.logistic?.address?.address}
+                      </Span>
+                    </InputWrapper>
+                  </FormCol>
+                </FormRow>
+              )}
               {(form.logistic.option === '超商取貨-711' ||
                 form.logistic.option === '超商取貨-全家') && (
                   <>
@@ -1071,11 +1314,11 @@ export const AddOrder = () => {
                             name='county'
                             onChange={handleFormChange}
                             $border={
-                              (promptMessage?.county ||
-                                orderState.error?.errors.county) &&
+                              (promptMessage?.logistic?.address?.county ||
+                                orderState.error?.errors.logistic?.address?.county) &&
                               '2px solid #d15252'
                             }
-                            value={form.logistic.address.county}
+                            value={form?.logistic?.address?.county}
                             disabled={submitClicked && !orderState.error}
                           >
                             <option value='' disabled={true}>
@@ -1083,7 +1326,12 @@ export const AddOrder = () => {
                             </option>
                             <option value='台北市'>台北市</option>
                           </Select>
-                          <Span $color={'#d15252'}>{promptMessage?.county}</Span>
+                          <Span $color={'#d15252'}>
+                            {promptMessage?.logistic?.address?.county}
+                          </Span>
+                          <Span $color={'#d15252'}>
+                            {orderState.error?.errors?.logistic?.address?.county}
+                          </Span>
                         </SelectWrapper>
 
                         <SelectWrapper $spanOffset={'-1.2rem'} $height={'2.5rem'}>
@@ -1091,20 +1339,25 @@ export const AddOrder = () => {
                             name='district'
                             onChange={handleFormChange}
                             $border={
-                              (promptMessage?.district ||
-                                orderState.error?.errors.district) &&
+                              (promptMessage?.logistic?.address?.district ||
+                                orderState.error?.errors?.logistic?.address?.district) &&
                               '2px solid #d15252'
                             }
-                            value={form.logistic.address.district}
-                            disabled={!form.logistic.address.county || submitClicked && !orderState.error}
+                            value={form?.logistic?.address?.district}
+                            disabled={!form.logistic?.address.county || submitClicked && !orderState.error}
                           >
                             <option value='' disabled={true}>
                               選擇區域
                             </option>
                             <option value='士林區'>士林區</option>
                           </Select>
+
                           <Span $color={'#d15252'}>
-                            {promptMessage?.district}
+                            {promptMessage?.logistic?.address?.district}
+                          </Span>
+                          <Span $color={'#d15252'}>
+                            {' '}
+                            {orderState.error?.errors?.logistic?.address?.district}
                           </Span>
                         </SelectWrapper>
                       </FormCol>
@@ -1114,35 +1367,35 @@ export const AddOrder = () => {
                             name='storeName'
                             onChange={handleFormChange}
                             $border={
-                              (promptMessage?.storeName ||
-                                orderState.error?.errors.storeName) &&
+                              (promptMessage?.logistic?.address?.convenienceStore?.storeName ||
+                                orderState.error?.errors?.logistic?.address?.convenienceStore?.storeName) &&
                               '2px solid #d15252'
                             }
-                            value={form.logistic.address.convenienceStore.storeId}
-                            disabled={!form.logistic.address.district || submitClicked && !orderState.error}
+                            value={form?.logistic?.address.convenienceStore?.storeId}
+                            disabled={!form.logistic?.address?.district || submitClicked && !orderState.error}
                           >
                             <option value='' disabled={true}>
                               選擇門市
                             </option>
                             <option value='240950'>240950 文林門市</option>
                           </Select>
+
                           <Span $color={'#d15252'}>
-                            {promptMessage?.storeName}
+                            {promptMessage?.logistic?.address?.convenienceStore?.storeName}
+                          </Span>
+                          <Span $color={'#d15252'}>
+                            {' '}
+                            {orderState.error?.errors?.logistic?.address?.convenienceStore?.storeName}
                           </Span>
                         </SelectWrapper>
                       </FormCol>
                     </FormRow>
                     <FormRow $gap={'24px'}>
                       <FormCol $minWidth={'5rem'}>
-                        <label></label>
+                        <label />
                         <InputWrapper
                           $height={'2.5rem'}
                           $spanOffset={'-1.2rem'}
-                          $border={
-                            (promptMessage?.address?.district ||
-                              orderState.error?.errors.district) &&
-                            '2px solid #d15252'
-                          }
                         >
                           <Input
                             type='text'
@@ -1157,112 +1410,6 @@ export const AddOrder = () => {
                     </FormRow>
                   </>
                 )}
-              {form.logistic.option === '宅配到府' && (
-                <FormRow $gap={'24px'}>
-                  <FormCol $minWidth={'5rem'}>
-                    <label>收貨地址</label>
-                    <InputWrapper
-                      $height={'2.5rem'}
-                      $spanOffset={'-1.2rem'}
-                      $border={
-                        (promptMessage?.address?.zipcode ||
-                          orderState.error?.errors.address?.zipcode) &&
-                        '2px solid #d15252'
-                      }
-                    >
-                      <Input
-                        name='zipcode'
-                        type='text'
-                        placeholder='郵遞區號'
-                        onChange={handleFormChange}
-                        value={form?.logistic?.address?.zipcode}
-                        disabled={submitClicked && !orderState.error}
-                      />
-                      <Span $color={'#d15252'}>
-                        {promptMessage?.address?.zipcode}
-                      </Span>
-                      <Span $color={'#d15252'}>
-                        {orderState.error?.errors.address?.zipcode}
-                      </Span>
-                    </InputWrapper>
-                    <InputWrapper
-                      $height={'2.5rem'}
-                      $spanOffset={'-1.2rem'}
-                      $border={
-                        (promptMessage?.address?.county ||
-                          orderState.error?.errors.county) &&
-                        '2px solid #d15252'
-                      }
-                    >
-                      <Input
-                        name='county'
-                        type='text'
-                        placeholder='縣市'
-                        onChange={handleFormChange}
-                        value={form?.logistic?.address?.county}
-                        disabled={submitClicked && !orderState.error}
-                      />
-                      <Span $color={'#d15252'}>
-                        {promptMessage?.address?.county}
-                      </Span>
-                      <Span $color={'#d15252'}>
-                        {orderState.error?.errors.address?.county}
-                      </Span>
-                    </InputWrapper>
-                    <InputWrapper
-                      $height={'2.5rem'}
-                      $spanOffset={'-1.2rem'}
-                      $border={
-                        (promptMessage?.address?.district ||
-                          orderState.error?.errors.district) &&
-                        '2px solid #d15252'
-                      }
-                    >
-                      <Input
-                        name='district'
-                        type='text'
-                        placeholder='鄉鎮市區'
-                        onChange={handleFormChange}
-                        value={form?.logistic?.address?.district}
-                        disabled={submitClicked && !orderState.error}
-                      />
-                      <Span $color={'#d15252'}>
-                        {promptMessage?.address?.district}
-                      </Span>
-                      <Span $color={'#d15252'}>
-                        {' '}
-                        {orderState.error?.errors.district}
-                      </Span>
-                    </InputWrapper>
-                  </FormCol>
-                  <FormCol $minWidth={'5rem'}>
-                    <InputWrapper
-                      $height={'2.5rem'}
-                      $spanOffset={'-1.2rem'}
-                      $border={
-                        (promptMessage?.address?.address ||
-                          orderState.error?.errors.address) &&
-                        '2px solid #d15252'
-                      }
-                    >
-                      <Input
-                        name='address'
-                        type='text'
-                        placeholder='詳細地址'
-                        onChange={handleFormChange}
-                        value={form?.logistic?.address?.address}
-                        disabled={submitClicked && !orderState.error}
-                      />
-                      <Span $color={'#d15252'}>
-                        {promptMessage?.address?.address}
-                      </Span>
-                      <Span $color={'#d15252'}>
-                        {orderState.error?.errors.address}
-                      </Span>
-                    </InputWrapper>
-                  </FormCol>
-                </FormRow>
-              )}
 
               <FormRow $gap={'24px'}>
                 <FormCol $minWidth={'5rem'}>
@@ -1271,8 +1418,8 @@ export const AddOrder = () => {
                     $height={'2.5rem'}
                     $spanOffset={'-1.2rem'}
                     $border={
-                      (promptMessage?.receiverName ||
-                        orderState.error?.errors.receiverName) &&
+                      (promptMessage?.logistic?.receiver?.receiverName ||
+                        orderState.error?.errors?.logistic?.receiver?.receiverName) &&
                       '2px solid #d15252'
                     }
                   >
@@ -1284,10 +1431,10 @@ export const AddOrder = () => {
                       disabled={submitClicked && !orderState.error}
                     />
                     <Span $color={'#d15252'}>
-                      {promptMessage?.receiverName}
+                      {promptMessage?.logistic?.receiver?.receiverName}
                     </Span>
                     <Span $color={'#d15252'}>
-                      {orderState.error?.errors.receiverName}
+                      {orderState.error?.errors?.logistic?.receiver?.receiverName}
                     </Span>
                   </InputWrapper>
                 </FormCol>
@@ -1297,8 +1444,8 @@ export const AddOrder = () => {
                     $height={'2.5rem'}
                     $spanOffset={'-1.2rem'}
                     $border={
-                      (promptMessage?.receiverMobileNumber ||
-                        orderState.error?.errors.receiverMobileNumber) &&
+                      (promptMessage?.logistic?.receiver?.receiverMobileNumber ||
+                        orderState.error?.errors?.logistic?.receiver?.receiverMobileNumber) &&
                       '2px solid #d15252'
                     }
                   >
@@ -1310,10 +1457,10 @@ export const AddOrder = () => {
                       disabled={submitClicked && !orderState.error}
                     />
                     <Span $color={'#d15252'}>
-                      {promptMessage?.receiverMobileNumber}
+                      {promptMessage?.logistic?.receiver?.receiverMobileNumber}
                     </Span>
                     <Span $color={'#d15252'}>
-                      {orderState.error?.errors.receiverMobileNumber}
+                      {orderState.error?.errors?.logistic?.receiver?.receiverMobileNumber}
                     </Span>
                   </InputWrapper>
                 </FormCol>
@@ -1394,8 +1541,7 @@ export const AddOrder = () => {
                   )}
                 </FormCol>
               </FormRow>
-              {/*<Span><pre>{JSON.stringify(promptMessage, null, 2)}</pre></Span> */}
-              {/* <Span><pre>{JSON.stringify(productState.data, null, 2)}</pre></Span> */}
+              {/* <Span><pre>{JSON.stringify(promptMessage, null, 2)}</pre></Span> */}
               {/* <Span><pre>{JSON.stringify(productState.data, null, 2)}</pre></Span> */}
             </FormSide>
             {/* <Span><pre>{JSON.stringify(form, null, 2)}</pre></Span> */}

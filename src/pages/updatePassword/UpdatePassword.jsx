@@ -66,7 +66,7 @@ const Form = styled.form`
     }
     ${Span} {
       position: absolute;
-      bottom: -1.5rem;
+      bottom: -1.1rem;
     }
   }
 `;
@@ -125,6 +125,7 @@ export const UpdatePassword = () => {
       dispatch(reset());
     }
     const { name, value } = e.target;
+    setPromptMessage(initPromptMessage)
     setformInput(prevState => ({
       ...prevState,
       [name]: value,
@@ -151,6 +152,9 @@ export const UpdatePassword = () => {
           };
         });
       } else if (originPasswordHash !== authEmployeeState.data.passwordHash) {
+        console.log(originPasswordHash)
+        console.log(authEmployeeState.data.passwordHash)
+        console.log(authEmployeeState.data)
         setPromptMessage(prev => {
           return {
             ...prev,
@@ -210,7 +214,7 @@ export const UpdatePassword = () => {
             <h1>變更密碼</h1>
           </TitleContainer>
 
-          <Flexbox $direction={'column'} $gap={'1rem'} $margin={'0 0 40px 0'}>
+          <Flexbox $direction={'column'} $gap={'1.5rem'} $margin={'0 0 40px 0'}>
             <Flexbox>
               <label>姓名員編</label>
               <InputWrapper $height={'2.5rem'}>

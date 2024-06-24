@@ -62,14 +62,6 @@ export const SingleLogistic = () => {
   const authEmployeeState = useSelector(state => state.authEmployee);
   const TOKEN = authEmployeeState.data?.accessToken;
 
-  const promptField = fieldName => {
-    if (
-      promptMessage?.[fieldName] ||
-      logisticState.error?.errors?.[fieldName]
-    ) {
-      return '2px solid #d15252';
-    }
-  };
 
 
   //表單管理
@@ -223,7 +215,23 @@ export const SingleLogistic = () => {
   const handleFormSubmit = async e => {
     e.preventDefault();
     setOperateType('editLogistic');
-    const { logisticNumber, status, option, deliveryCompany, fee, logisticHistory, receiver, address, memo, order, lastEditedBy, lastEditerName, updatedAt, logisticReceiver, phoneNumber } = form;
+    const {
+      address,
+      receiver,
+      deliveryCompany,
+      logisticNumber,
+      status,
+      option,
+      fee,
+      logisticHistory,
+      memo,
+      lastEditedBy,
+      createdAt,
+      updatedAt,
+      lastEditerName,
+      order
+    } = form;
+
     if (
       receiver?.receiverName !== '' &&
       receiver?.receiverMobileNumber !== '' &&
@@ -261,7 +269,82 @@ export const SingleLogistic = () => {
       };
       await dispatch(logisticRequests.update(TOKEN, logisticNumber, newData));
     } else {
-      alert('欄位填寫不完整')
+      if (receiver?.receiverName === '') {
+        setPromptMessage(prev => {
+          return {
+            ...prev,
+            receiver: { ...prev.receiver, receiverName: `收件人姓名不得為空` },
+          };
+        });
+      }
+      if (receiver?.receiverMobileNumber === '') {
+        setPromptMessage(prev => {
+          return {
+            ...prev,
+            receiver: {
+              ...prev.receiver,
+              receiverMobileNumber: `收件人電話不得為空`
+            },
+          };
+        });
+      }
+      if (address?.zipcode === '') {
+        setPromptMessage(prev => {
+          return {
+            ...prev,
+            address: {
+              ...prev?.address,
+              zipcode: `郵遞區號不得為空`,
+            }
+          };
+        });
+      }
+      if (address?.county === '') {
+        setPromptMessage(prev => {
+          return {
+            ...prev,
+            address: {
+              ...prev?.address,
+              county: `縣市不得為空`,
+            }
+          };
+        });
+      }
+      if (address?.district === '') {
+        setPromptMessage(prev => {
+          return {
+            ...prev,
+            address: {
+              ...prev?.address,
+              district: `鄉鎮市區不得為空`,
+            }
+          };
+        });
+      }
+      if (address?.address === '') {
+        setPromptMessage(prev => {
+          return {
+            ...prev,
+            address: {
+              ...prev?.address,
+              address: `詳細地址欄位不得為空`,
+            }
+          };
+        });
+      }
+      if (address?.convenienceStore?.storeId === '') {
+        setPromptMessage(prev => {
+          return {
+            ...prev,
+            address: {
+              ...prev?.address,
+              convenienceStore: {
+                storeId: `門市欄位不得為空`,
+              }
+            }
+          };
+        });
+      }
     }
   };
 
@@ -815,7 +898,6 @@ export const SingleLogistic = () => {
                   <SelectWrapper $spanOffset={'-1.2rem'} $height={'2.5rem'}>
                     <Select
                       name='status'
-                      $border={promptField('status')}
                       onChange={handleFormChange}
                       value={form.status}
                       disabled={uneditable}
@@ -828,12 +910,6 @@ export const SingleLogistic = () => {
                         );
                       })}
                     </Select>
-                    <Span $color={'#d15252'}>
-                      {promptMessage?.status}
-                    </Span>
-                    <Span $color={'#d15252'}>
-                      {logisticState.error?.errors.status}
-                    </Span>
                   </SelectWrapper>
                 </FormCol>
               </FormRow>
@@ -845,9 +921,8 @@ export const SingleLogistic = () => {
                     <Select
                       name='option'
                       value={form.option}
-                      $border={promptField('option')}
                       onChange={handleFormChange}
-                      disabled={uneditable}
+                      disabled={true}
                     >
                       <option value={''} disabled={true}>請選擇物流選項</option>
                       <option value={'宅配到府'}>宅配到府 / $150</option>
@@ -856,12 +931,6 @@ export const SingleLogistic = () => {
                         超商取貨-全家 / $45
                       </option>
                     </Select>
-                    <Span $color={'#d15252'}>
-                      {promptMessage?.option}
-                    </Span>
-                    <Span $color={'#d15252'}>
-                      {logisticState.error?.errors.option}
-                    </Span>
                   </SelectWrapper>
                 </FormCol>
                 <FormCol $minWidth={'5rem'}>
@@ -869,7 +938,6 @@ export const SingleLogistic = () => {
                   <InputWrapper
                     $height={'2.5rem'}
                     $spanOffset={'-1.2rem'}
-                    $border={promptField('companyName')}
                   >
                     <Input
                       name='companyName'
@@ -879,18 +947,10 @@ export const SingleLogistic = () => {
                       onChange={handleFormChange}
                       disabled={uneditable}
                     />
-                    <Span $color={'#d15252'}>
-                      {promptMessage?.deliveryCompany?.companyName}
-                    </Span>
-                    <Span $color={'#d15252'}>
-                      {logisticState.error?.errors.deliveryCompany?.companyName}
-                    </Span>
                   </InputWrapper>
-
                   <InputWrapper
                     $height={'2.5rem'}
                     $spanOffset={'-1.2rem'}
-                    $border={promptField('receiptNumber')}
                   >
                     <Input
                       name='receiptNumber'
@@ -900,15 +960,6 @@ export const SingleLogistic = () => {
                       onChange={handleFormChange}
                       disabled={uneditable}
                     />
-                    <Span $color={'#d15252'}>
-                      {promptMessage?.deliveryCompany?.receiptNumber}
-                    </Span>
-                    <Span $color={'#d15252'}>
-                      {
-                        logisticState.error?.errors?.deliveryCompany
-                          ?.receiptNumber
-                      }
-                    </Span>
                   </InputWrapper>
                 </FormCol>
               </FormRow>
@@ -921,38 +972,75 @@ export const SingleLogistic = () => {
                         <Select
                           name="county"
                           value={form.address?.county}
-                          $border={promptField('county')}
+                          $border={
+                            (
+                              promptMessage?.address?.county ||
+                              logisticState.error?.errors?.address?.county
+                            ) &&
+                            '2px solid #d15252'
+                          }
                           disabled={uneditable}
                           onChange={handleFormChange}
                         >
                           <option value="" disabled={true}>選擇縣市</option>
                           <option value="台北市">台北市</option>
                         </Select>
+                        <Span $color={'#d15252'}>
+                          {promptMessage?.address?.county}
+                        </Span>
+                        <Span $color={'#d15252'}>
+                          {
+                            logisticState.error?.errors.address
+                              ?.county
+                          }
+                        </Span>
                       </SelectWrapper>
 
-                      <SelectWrapper $spanOffset={'-1.2rem'} $height={'2.5rem'}>
+                      <SelectWrapper
+                        $spanOffset={'-1.2rem'}
+                        $height={'2.5rem'}
+                      >
                         <Select
                           name="district"
                           value={form.address?.district}
-                          $border={promptField('district')}
                           disabled={uneditable}
                           onChange={handleFormChange}
+                          $border={
+                            (promptMessage?.address?.district ||
+                              logisticState.error?.errors?.address?.district
+                            ) && '2px solid #d15252'
+                          }
                         >
                           <option value="" disabled={true}>選擇區域</option>
                           <option value="士林區">士林區</option>
                         </Select>
+
+                        <Span $color={'#d15252'}>
+                          {promptMessage?.address?.district}
+                        </Span>
+                        <Span $color={'#d15252'}>
+                          {logisticState.error?.errors.address?.district}
+                        </Span>
                       </SelectWrapper>
                       <SelectWrapper $spanOffset={'-1.2rem'} $height={'2.5rem'}>
                         <Select
                           name="convenienceStore"
                           value={form.address?.convenienceStore.storeId}
-                          $border={promptField('convenienceStore')}
                           disabled={uneditable}
                           onChange={handleFormChange}
+                          $border={
+                            (promptMessage?.address?.convenienceStore?.storeId || logisticState.error?.errors?.address?.convenienceStore?.storeId) && '2px solid #d15252'
+                          }
                         >
                           <option value="" disabled={true}>選擇門市</option>
                           <option value="240950">240950 文林門市</option>
                         </Select>
+                        <Span $color={'#d15252'}>
+                          {promptMessage?.address?.convenienceStore?.storeId}
+                        </Span>
+                        <Span $color={'#d15252'}>
+                          {logisticState.error?.errors.address?.convenienceStore?.storeId}
+                        </Span>
                       </SelectWrapper>
                     </FormCol>
                     <FormCol>
@@ -960,6 +1048,11 @@ export const SingleLogistic = () => {
                         $height={'2.5rem'}
                         $spanOffset={'-1.2rem'}
                         disabled={true}
+                        $border={
+                          (promptMessage?.address?.address ||
+                            logisticState.error?.errors?.address?.address
+                          ) && '2px solid #d15252'
+                        }
                       >
                         <Input
                           name='address'
@@ -969,6 +1062,12 @@ export const SingleLogistic = () => {
                           value={form?.address?.address}
                           disabled={true}
                         />
+                        <Span $color={'#d15252'}>
+                          {promptMessage?.address?.address}
+                        </Span>
+                        <Span $color={'#d15252'}>
+                          {logisticState.error?.errors.address?.address}
+                        </Span>
                       </InputWrapper>
                     </FormCol>
                   </FormRow>
@@ -980,7 +1079,6 @@ export const SingleLogistic = () => {
                     <InputWrapper
                       $height={'2.5rem'}
                       $spanOffset={'-1.2rem'}
-                      $border={promptField('zipcode')}
                     >
                       <Input
                         name='zipcode'
@@ -988,6 +1086,13 @@ export const SingleLogistic = () => {
                         placeholder='郵遞區號'
                         value={form?.address?.zipcode}
                         disabled={uneditable}
+                        $border={
+                          (
+                            promptMessage?.address?.zipcode ||
+                            logisticState.error?.errors?.address?.zipcode
+                          ) &&
+                          '2px solid #d15252'
+                        }
                         onChange={handleFormChange}
                       />
                       <Span $color={'#d15252'}>
@@ -1003,7 +1108,13 @@ export const SingleLogistic = () => {
                     <InputWrapper
                       $height={'2.5rem'}
                       $spanOffset={'-1.2rem'}
-                      $border={promptField('county')}
+                      $border={
+                        (
+                          promptMessage?.address?.county ||
+                          logisticState.error?.errors?.address?.county
+                        ) &&
+                        '2px solid #d15252'
+                      }
                     >
                       <Input
                         name='county'
@@ -1027,7 +1138,6 @@ export const SingleLogistic = () => {
                     <InputWrapper
                       $height={'2.5rem'}
                       $spanOffset={'-1.2rem'}
-                      $border={promptField('district')}
                     >
                       <Input
                         name='district'
@@ -1036,6 +1146,13 @@ export const SingleLogistic = () => {
                         value={form?.address?.district}
                         disabled={uneditable}
                         onChange={handleFormChange}
+                        $border={
+                          (
+                            promptMessage?.address?.district ||
+                            logisticState.error?.errors?.address?.district
+                          ) &&
+                          '2px solid #d15252'
+                        }
                       />
                       <Span $color={'#d15252'}>
                         {promptMessage?.address?.district}
@@ -1053,7 +1170,6 @@ export const SingleLogistic = () => {
                     <InputWrapper
                       $height={'2.5rem'}
                       $spanOffset={'-1.2rem'}
-                      $border={promptField('address')}
                     >
                       <Input
                         name='address'
@@ -1062,6 +1178,13 @@ export const SingleLogistic = () => {
                         value={form?.address?.address}
                         disabled={uneditable}
                         onChange={handleFormChange}
+                        $border={
+                          (
+                            promptMessage?.address?.address ||
+                            logisticState.error?.errors?.address?.address
+                          ) &&
+                          '2px solid #d15252'
+                        }
                       />
                       <Span $color={'#d15252'}>
                         {promptMessage?.address?.address}
@@ -1084,7 +1207,6 @@ export const SingleLogistic = () => {
                   <InputWrapper
                     $height={'2.5rem'}
                     $spanOffset={'-1.2rem'}
-                    $border={promptField('receiverName')}
                   >
                     <Input
                       name='receiverName'
@@ -1092,12 +1214,19 @@ export const SingleLogistic = () => {
                       value={form?.receiver?.receiverName}
                       disabled={uneditable}
                       onChange={handleFormChange}
+                      $border={
+                        (
+                          promptMessage?.receiver?.receiverName ||
+                          logisticState.error?.errors?.receiver?.receiverName
+                        ) &&
+                        '2px solid #d15252'
+                      }
                     />
                     <Span $color={'#d15252'}>
-                      {promptMessage?.receiverName}
+                      {promptMessage?.receiver?.receiverName}
                     </Span>
                     <Span $color={'#d15252'}>
-                      {logisticState.error?.errors?.receiverName}
+                      {logisticState.error?.errors?.receiver?.receiverName}
                     </Span>
                   </InputWrapper>
                 </FormCol>
@@ -1106,7 +1235,13 @@ export const SingleLogistic = () => {
                   <InputWrapper
                     $height={'2.5rem'}
                     $spanOffset={'-1.2rem'}
-                    $border={promptField('receiverMobileNumber')}
+                    $border={
+                      (
+                        promptMessage?.receiver?.receiverMobileNumber ||
+                        logisticState.error?.errors?.receiver?.receiverMobileNumber
+                      ) &&
+                      '2px solid #d15252'
+                    }
                   >
                     <Input
                       name='receiverMobileNumber'
@@ -1116,12 +1251,11 @@ export const SingleLogistic = () => {
                       onChange={handleFormChange}
                     />
                     <Span $color={'#d15252'}>
-                      {promptMessage?.receiverMobileNumber}
+                      {promptMessage?.receiver?.receiverMobileNumber}
                     </Span>
                     <Span $color={'#d15252'}>
                       {
-                        logisticState.error?.errors?.logisticReceiver
-                          ?.receiverMobileNumber
+                        logisticState.error?.errors?.receiver?.receiverMobileNumber
                       }
                     </Span>
                   </InputWrapper>
@@ -1134,13 +1268,12 @@ export const SingleLogistic = () => {
                   <InputWrapper
                     $height={'2.5rem'}
                     $spanOffset={'-1.2rem'}
-                    $border={promptField('orderNumber')}
                   >
                     <Input
                       name='orderNumber'
                       type='text'
                       placeholder='(可選)'
-                      value={form?.order?.orderNumber}
+                      defaultValue={form?.order?.orderNumber}
                       disabled={true}
                     />
                     <Span $color={'#d15252'}>{promptMessage?.orderNumber}</Span>
@@ -1162,19 +1295,14 @@ export const SingleLogistic = () => {
                   <InputWrapper
                     $height={'2.5rem'}
                     $spanOffset={'-1.2rem'}
-                    $border={promptField('username')}
                   >
                     <Input
                       name='username'
                       type='text'
                       placeholder='(可選)'
-                      value={form?.order?.username}
+                      defaultValue={form?.order?.username}
                       disabled={true}
                     />
-                    <Span $color={'#d15252'}>{promptMessage?.username}</Span>
-                    <Span $color={'#d15252'}>
-                      {logisticState.error?.errors.username}
-                    </Span>
                   </InputWrapper>
                 </FormCol>
               </FormRow>
@@ -1193,18 +1321,6 @@ export const SingleLogistic = () => {
                     $alignItems={'flex-start'}
                   >
                     <label>物流紀錄</label>
-                    {/* <Button
-                      type='button'
-                      $width={'3rem'}
-                      $color={'#999'}
-                      $bg={'transparent'}
-                      onClick={() => {
-                        setShowModalElement(true)
-                      }}
-                      $animation
-                    >
-                      <Add />增加
-                    </Button> */}
                   </Flexbox>
                   <DataGrid
                     rows={logisticHistoryRows}
@@ -1259,14 +1375,12 @@ export const SingleLogistic = () => {
                   />
                 </FormCol>
               </FormRow>
-              <Span $color={'#d15252'}>{promptMessage?.products}</Span>
               <FormRow $gap={'24px'}>
                 <FormCol $minWidth={'5rem'}>
                   <label>備註事項</label>
                   <InputWrapper
                     $height={'2.5rem'}
                     $spanOffset={'-1.2rem'}
-                    $border={promptField('memo')}
                   >
                     <Input
                       name='memo'
@@ -1286,12 +1400,12 @@ export const SingleLogistic = () => {
                 <FormCol $minWidth={'5rem'}>
                   <label>最後更新</label>
                   <Span>
-                    {form.updatedAt &&
-                      `${convertIsoToTaipeiTime(new Date(form.updatedAt))} , ${form.lastEditerName} (${form.lastEditedBy})`}
+                    {form.updatedAt && `${convertIsoToTaipeiTime(new Date(form.updatedAt))} `}
+                    {form.lastEditerName && `${form.lastEditerName} (${form.lastEditedBy})`}
                   </Span>
                 </FormCol>
               </FormRow>
-              {/* <Span>  <pre>{JSON.stringify(promptMessage, null, 2)}</pre>    </Span>*/}
+              {/* <Span>  <pre>{JSON.stringify(promptMessage, null, 2)}</pre>    </Span> */}
             </FormSide>
             {/* <Span>
               <pre>{JSON.stringify(form, null, 2)}</pre>{' '}

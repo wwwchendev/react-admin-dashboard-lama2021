@@ -43,8 +43,8 @@ const AddEmployee = props => {
     <>
       <FormWrapper>
         <FormTitle>新增員工資料</FormTitle>
-        <FormBody $gap={'20px'}>
-          <FormSide>
+        <FormBody>
+          <FormSide $gap={'18px'} >
             <FormRow>
               <FormCol>
                 <label>員工編號</label>

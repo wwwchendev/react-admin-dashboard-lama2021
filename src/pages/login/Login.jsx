@@ -58,7 +58,7 @@ const Form = styled.form`
     padding: 10px 20px;
     width: 100%;
     font-size: 1rem;
-    margin: 20px 0 20px 0;
+    margin: 30px 0 20px 0;
   }
 
   ${StyledLink} {
@@ -175,20 +175,23 @@ export const Login = () => {
               />
               {<span>{promptMessage.employeeId}</span>}
             </InputWrapper>
-            <PasswordInputWrapper
-              $border={promptMessage.password && '2px solid #d15252'}
+            <InputWrapper
               $height={'3rem'}
             >
-              <PasswordInput
-                type='password'
-                name='password'
-                placeholder='密碼'
-                onChange={handleLoginFormChange}
-                autoComplete='current-password'
+              <PasswordInputWrapper
                 $border={promptMessage.password && '2px solid #d15252'}
-              />
-            </PasswordInputWrapper>
-            {<span>{promptMessage.password}</span>}
+                $height={'3rem'}
+              >
+                <PasswordInput
+                  type='password'
+                  name='password'
+                  placeholder='密碼'
+                  onChange={handleLoginFormChange}
+                  autoComplete='current-password'
+                />
+              </PasswordInputWrapper>
+              {<span>{promptMessage.password}</span>}
+            </InputWrapper>
           </Flexbox>
           <Button
             disabled={employeeState.loading}

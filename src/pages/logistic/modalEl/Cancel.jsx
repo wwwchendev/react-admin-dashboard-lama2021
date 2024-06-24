@@ -66,7 +66,7 @@ const Cancel = props => {
         setForm(prevState => ({
           ...prevState,
           logisticNumber: currentData.logisticNumber,
-          logisticStatus: currentData?.logisticStatus,
+          status: currentData?.status,
           deliveryCompany: {
             companyName: currentData?.deliveryCompany?.companyName,
             receiptNumber: currentData?.deliveryCompany?.receiptNumber,
@@ -99,7 +99,7 @@ const Cancel = props => {
       setSubmitClicked(true);
       setOperateType('cancel');
       const newData = {
-        logisticStatus: '已取消',
+        status: '已取消',
         logisticHistory: [
           ...currentData.logisticHistory,
           {

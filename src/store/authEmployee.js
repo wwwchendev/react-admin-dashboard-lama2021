@@ -19,6 +19,7 @@ const AuthEmployeeSlice = createSlice({
     requestFailed: (state, action) => {
       state.loading = false;
       const data = action.payload.errors;
+      console.log(action.payload)
       state.error = data;
     },
     loginSuccess: (state, action) => {

@@ -180,14 +180,6 @@ const router = createBrowserRouter(
           ),
         },
         {
-          path: '/invoice',
-          element: (
-            <RequireLogin>
-              <Invoice />
-            </RequireLogin>
-          ),
-        },
-        {
           path: '/logistic',
           element: (
             <RequireLogin>

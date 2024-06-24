@@ -4,10 +4,6 @@ import { Visibility } from '@material-ui/icons';
 import { tablet } from '@/utils/responsive';
 import { useNavigate, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  contactHistoryRequests,
-  clearContactHistoryError,
-} from '@/store/contactHistory';
 //utility
 import customAxios from '@/utils/axios/customAxios';
 import { Comment } from '@material-ui/icons';

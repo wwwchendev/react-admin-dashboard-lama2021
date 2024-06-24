@@ -41,10 +41,10 @@ customAxios.interceptors.response.use(
         const authEmployee = JSON.parse(persist.authEmployee);
         const refreshToken = authEmployee.data.refreshToken;
 
-        const response = await axios.post(`${import.meta.env.VITE_APIURL}/auth/refreshToken/employee`, { refreshToken });
+        const response = await axios.post(`${import.meta.env.VITE_APIURL}/auth/refreshToken/employee`, { refreshToken: refreshToken });
 
         if (response.status === 200) {
-          const newToken = response.data.data.accessToken;
+          const newToken = response.data.data.accessToken
           authEmployee.data.accessToken = newToken;
           persist.authEmployee = JSON.stringify(authEmployee);
           localStorage.setItem('persist:root', JSON.stringify(persist));

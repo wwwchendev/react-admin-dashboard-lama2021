@@ -1355,7 +1355,7 @@ export const AddProduct = () => {
               </FormRow>
               <FormRow>
                 <FormCol $minWidth={'5rem'}>
-                  <label>最後更新{variantList.length}</label>
+                  <label>最後更新</label>
                   <Span>
                     {authEmployeeState?.data?.name} /{' '}
                     {authEmployeeState?.data?.employeeId}

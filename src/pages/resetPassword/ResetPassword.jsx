@@ -165,6 +165,7 @@ export const ResetPassword = () => {
           <Flexbox $direction={'column'} $gap={'1.5rem'}>
             <InputWrapper
               $height={'3rem'}
+              $display={'flex'}
               $border={
                 (promptMessage.newPassword ||
                   promptMessage.checkedPassword === '兩次輸入密碼不一致') &&
@@ -183,6 +184,7 @@ export const ResetPassword = () => {
             </InputWrapper>
             <InputWrapper
               $height={'3rem'}
+              $display={'flex'}
               $border={promptMessage.checkedPassword && '2px solid #d15252'}
             >
               <PasswordInput

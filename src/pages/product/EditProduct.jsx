@@ -169,6 +169,7 @@ export const EditProduct = () => {
     if (operateType === 'updateProduct') {
       if (submitClicked && productState.error === null) {
         const confirmed = confirm('已更新商品');
+        setSubmitClicked(false)
         if (confirmed) {
           navigator('/product');
         }

@@ -4,7 +4,7 @@ export const InputWrapper = styled.div`
   position: relative;
   flex: ${p => (p.$flex ? p.$flex : '')};
   margin: ${p => (p.$margin ? p.$margin : '')};
-  /* border: 1px solid red; */
+display: ${p => (p.$display ? p.$display : '')};
   height: ${p => (p.$height ? p.$height : '2rem')};
   width: ${p => (p.$width ? p.$width : '100%')};
   input {
